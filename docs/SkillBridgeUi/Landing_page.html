@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SkillBridge</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "content-light": "#111418",
+                        "content-dark": "#f6f7f8",
+                        "subtle-light": "#617589",
+                        "subtle-dark": "#a0b3c6",
+                        "border-light": "#dbe0e6",
+                        "border-dark": "#303e4c"
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-content-light dark:text-content-dark">
+<div class="flex flex-col min-h-screen">
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm border-b border-border-light dark:border-border-dark">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16">
+<div class="flex items-center gap-3">
+<svg class="w-8 h-8 text-primary" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z" fill="currentColor"></path>
+</svg>
+<h1 class="text-xl font-bold">SkillBridge</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">Product</a>
+<a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">Solutions</a>
+<a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">Resources</a>
+<a class="text-sm font-medium text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">Pricing</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                            Get Started
+                        </button>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow">
+<section class="py-16 sm:py-24 lg:py-32">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid lg:grid-cols-2 gap-12 items-center">
+<div class="text-center lg:text-left">
+<h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tighter">Bridge the Gap Between Your <span class="text-primary">Education and Career</span></h1>
+<p class="mt-4 max-w-xl mx-auto lg:mx-0 text-lg text-subtle-light dark:text-subtle-dark">SkillBridge helps university students and graduates generate personalized learning roadmaps using AI. Our platform provides a step-by-step guide to help you achieve your career goals.</p>
+<div class="mt-8">
+<button class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-6 rounded-lg text-lg transition-colors">
+                                    Get Started for Free
+                                </button>
+</div>
+</div>
+<div class="flex justify-center">
+<div class="w-full max-w-md h-auto aspect-square bg-cover bg-center rounded-xl" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBez77kxGoUwfeuoRM2ThD6iN6eatpx7CGO7LgnIArHEMf94a5PAsG-sCqe3rDo4Xpxmq_Zt3t2vrB1XShfJBy7yqycoLKCA8k5ucMm6oEWkorFiuMJpMFwS7ABrCOhysdTgb7M4TFYJzlc3cTM3PDgOSOWmFeik2XBFe15Y9bjkzUEQZ-BJYFvW5T3b2kOQ2ck03IVulwc3e6MKMsuD4cq3_lefhg6ecsmkpHDW61wAB9Ub7M1DHe4qfbhkVZ63lbOuhUst5SP0I4");'></div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-16 sm:py-24 bg-background-light dark:bg-background-dark/50">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center">
+<h2 class="text-3xl sm:text-4xl font-bold">How It Works</h2>
+<p class="mt-3 max-w-2xl mx-auto text-lg text-subtle-light dark:text-subtle-dark">A simple, three-step process to your personalized career roadmap.</p>
+</div>
+<div class="mt-12 grid gap-8 md:grid-cols-3">
+<div class="bg-background-light dark:bg-background-dark p-8 rounded-lg border border-border-light dark:border-border-dark text-center shadow-sm">
+<div class="flex justify-center items-center bg-primary/10 dark:bg-primary/20 w-16 h-16 rounded-full mx-auto">
+<svg class="text-primary" fill="currentColor" height="32" viewBox="0 0 256 256" width="32" xmlns="http://www.w3.org/2000/svg"><path d="M240,136v64a16,16,0,0,1-16,16H32a16,16,0,0,1-16-16V136a16,16,0,0,1,16-16H80a8,8,0,0,1,0,16H32v64H224V136H176a8,8,0,0,1,0-16h48A16,16,0,0,1,240,136ZM85.66,77.66,120,43.31V128a8,8,0,0,0,16,0V43.31l34.34,34.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,77.66Z"></path></svg>
+</div>
+<h3 class="mt-6 text-xl font-bold">1. Upload Resume</h3>
+<p class="mt-2 text-subtle-light dark:text-subtle-dark">Upload your resume to let our AI analyze your skills and experience.</p>
+</div>
+<div class="bg-background-light dark:bg-background-dark p-8 rounded-lg border border-border-light dark:border-border-dark text-center shadow-sm">
+<div class="flex justify-center items-center bg-primary/10 dark:bg-primary/20 w-16 h-16 rounded-full mx-auto">
+<svg class="text-primary" fill="currentColor" height="32" viewBox="0 0 256 256" width="32" xmlns="http://www.w3.org/2000/svg"><path d="M169.64,134.33l44.77-19.46A16,16,0,0,0,213,85.07L52.92,32.8A16,16,0,0,0,32.8,52.92L85.07,213a15.83,15.83,0,0,0,14.41,11l.79,0a15.83,15.83,0,0,0,14.6-9.59h0l19.46-44.77L184,219.31a16,16,0,0,0,22.63,0l12.68-12.68a16,16,0,0,0,0-22.63Zm-69.48,73.76.06-.05Zm95.15-.09-49.66-49.67a16,16,0,0,0-26,4.94l-19.42,44.65L48,48l159.87,52.21-44.64,19.41a16,16,0,0,0-4.94,26L208,195.31Z"></path></svg>
+</div>
+<h3 class="mt-6 text-xl font-bold">2. Choose Skill</h3>
+<p class="mt-2 text-subtle-light dark:text-subtle-dark">Select the skill you want to learn or improve for your desired career path.</p>
+</div>
+<div class="bg-background-light dark:bg-background-dark p-8 rounded-lg border border-border-light dark:border-border-dark text-center shadow-sm">
+<div class="flex justify-center items-center bg-primary/10 dark:bg-primary/20 w-16 h-16 rounded-full mx-auto">
+<svg class="text-primary" fill="currentColor" height="32" viewBox="0 0 256 256" width="32" xmlns="http://www.w3.org/2000/svg"><path d="M235.92,199A8,8,0,0,1,225,195.92L155.32,72H136v8a8,8,0,0,1-16,0V72H100.68L31,195.92A8,8,0,0,1,17,188.08L82.32,72H24a8,8,0,0,1,0-16H232a8,8,0,0,1,0,16H173.68L239,188.08A8,8,0,0,1,235.92,199ZM128,112a8,8,0,0,0-8,8v16a8,8,0,0,0,16,0V120A8,8,0,0,0,128,112Zm0,56a8,8,0,0,0-8,8v16a8,8,0,0,0,16,0V176A8,8,0,0,0,128,168Z"></path></svg>
+</div>
+<h3 class="mt-6 text-xl font-bold">3. Get Roadmap</h3>
+<p class="mt-2 text-subtle-light dark:text-subtle-dark">Receive a personalized, step-by-step learning roadmap to achieve your goals.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="bg-background-light dark:bg-background-dark/50 border-t border-border-light dark:border-border-dark">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<nav class="flex flex-wrap justify-center gap-x-6 gap-y-2">
+<a class="text-sm text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">Product</a>
+<a class="text-sm text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">Solutions</a>
+<a class="text-sm text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">Resources</a>
+<a class="text-sm text-subtle-light dark:text-subtle-dark hover:text-primary dark:hover:text-primary transition-colors" href="#">Pricing</a>
+</nav>
+<p class="text-sm text-subtle-light dark:text-subtle-dark">© 2024 SkillBridge. All rights reserved.</p>
+</div>
+</div>
+</footer>
+</div>
+
+</body></html>

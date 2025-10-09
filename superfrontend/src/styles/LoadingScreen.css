@@ -1,0 +1,137 @@
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background: #f6f7f8;
+  font-family: 'Manrope', sans-serif;
+}
+
+.loading-content {
+  width: 100%;
+  max-width: 32rem;
+  text-align: center;
+}
+
+.spinner {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  border: 3px solid;
+  border-color: #137fec #137fec transparent transparent;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  margin-bottom: 3rem;
+}
+
+.spinner::after,
+.spinner::before {
+  content: '';
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  border: 3px solid;
+  border-color: transparent transparent rgba(19, 127, 236, 0.2) rgba(19, 127, 236, 0.2);
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  animation: rotationBack 0.5s linear infinite;
+  transform-origin: center center;
+}
+
+.spinner::before {
+  width: 56px;
+  height: 56px;
+  border-color: #137fec #137fec transparent transparent;
+  animation: rotation 1.5s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotationBack {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.loading-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #101922;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+.loading-subtitle {
+  font-size: 1rem;
+  color: rgba(16, 25, 34, 0.7);
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .loading-title {
+    font-size: 1.875rem;
+  }
+}
+
+.loading-status {
+  font-size: 0.875rem;
+  color: #137fec;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.error-message {
+  font-size: 1.125rem;
+  color: #dc2626;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.retry-button {
+  padding: 0.75rem 1.5rem;
+  background: #137fec;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.retry-button:hover {
+  background: #1066d4;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .loading-container {
+    background: #101922;
+  }
+  
+  .loading-title {
+    color: #f6f7f8;
+  }
+  
+  .loading-subtitle {
+    color: rgba(246, 247, 248, 0.7);
+  }
+}

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta charset="utf-8"/>
+<title>SkillBridge Learning Roadmap</title>
+<link crossorigin="" href="https://fonts.gstatic.com/" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope:wght@400;500;700;800" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#137fec",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101922",
+          },
+          fontFamily: {
+            "display": ["Manrope"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .modal {
+        display: none;
+    }
+    .modal:target {
+        display: flex;
+    }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-800 dark:text-slate-200">
+<div class="flex flex-col min-h-screen">
+<header class="bg-background-light dark:bg-background-dark/80 backdrop-blur-sm sticky top-0 z-20 border-b border-slate-200 dark:border-slate-800">
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16">
+<div class="flex items-center gap-4">
+<a class="flex items-center gap-2 text-primary" href="#">
+<svg class="h-6 w-6" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z" fill="currentColor"></path>
+</svg>
+<h1 class="text-xl font-bold text-slate-900 dark:text-white">SkillBridge</h1>
+</a>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-sm font-medium text-primary dark:text-primary" href="#">Roadmaps</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors" href="#">Resources</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors" href="#">Community</a>
+</nav>
+<div class="flex items-center gap-2">
+<button class="px-4 py-2 text-sm font-bold bg-primary/10 dark:bg-primary/20 text-primary rounded-lg hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors">Log in</button>
+<button class="px-4 py-2 text-sm font-bold bg-primary text-white rounded-lg hover:opacity-90 transition-opacity">Sign up</button>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="max-w-4xl mx-auto">
+<div class="text-center mb-12">
+<h2 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">Your Personalized Learning Roadmap</h2>
+<p class="text-slate-500 dark:text-slate-400">Follow this roadmap to master the skills you need for your career goals.</p>
+</div>
+<div class="relative pl-12">
+<div class="absolute left-6 top-3 bottom-3 w-0.5 bg-slate-200 dark:bg-slate-800"></div>
+<div class="space-y-16">
+<div class="relative">
+<div class="absolute left-0 top-3 -translate-x-1/2 w-6 h-6 bg-primary rounded-full flex items-center justify-center ring-8 ring-background-light dark:ring-background-dark">
+<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<a class="cursor-pointer" href="#modal-basics">
+<div>
+<h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Month 1-2: Basics</h3>
+<p class="mt-1 text-slate-500 dark:text-slate-400">Learn the fundamentals of programming with interactive tutorials and exercises.</p>
+</div>
+</a>
+</div>
+<div class="relative">
+<div class="absolute left-0 top-3 -translate-x-1/2 w-6 h-6 bg-primary rounded-full flex items-center justify-center ring-8 ring-background-light dark:ring-background-dark">
+<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<a class="cursor-pointer" href="#modal-data">
+<div>
+<h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Month 3-4: Data Structures &amp; Algorithms</h3>
+<p class="mt-1 text-slate-500 dark:text-slate-400">Master data structures and algorithms to solve complex problems efficiently.</p>
+</div>
+</a>
+</div>
+<div class="relative">
+<div class="absolute left-0 top-3 -translate-x-1/2 w-6 h-6 bg-white dark:bg-slate-700 border-2 border-primary rounded-full ring-8 ring-background-light dark:ring-background-dark"></div>
+<a class="cursor-pointer" href="#modal-frameworks">
+<div>
+<h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Month 5-6: Frameworks</h3>
+<p class="mt-1 text-slate-500 dark:text-slate-400">Explore popular frameworks to build robust and scalable applications.</p>
+</div>
+</a>
+</div>
+<div class="relative">
+<div class="absolute left-0 top-3 -translate-x-1/2 w-6 h-6 bg-white dark:bg-slate-700 border-2 border-primary rounded-full ring-8 ring-background-light dark:ring-background-dark"></div>
+<a class="cursor-pointer" href="#modal-projects">
+<div>
+<h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Month 7-8: Projects</h3>
+<p class="mt-1 text-slate-500 dark:text-slate-400">Apply your knowledge by working on real-world projects to showcase your skills.</p>
+</div>
+</a>
+</div>
+</div>
+</div>
+<div class="mt-16 pt-8 border-t border-slate-200 dark:border-slate-800">
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">Recommended Resources</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<a class="block p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300" href="#">
+<h4 class="text-lg font-bold text-slate-800 dark:text-slate-100">Udemy Courses</h4>
+<p class="mt-2 text-sm text-slate-500 dark:text-slate-400">In-depth video courses on various tech stacks.</p>
+</a>
+<a class="block p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300" href="#">
+<h4 class="text-lg font-bold text-slate-800 dark:text-slate-100">YouTube Tutorials</h4>
+<p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Free video content from top creators and educators.</p>
+</a>
+<a class="block p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300" href="#">
+<h4 class="text-lg font-bold text-slate-800 dark:text-slate-100">Official Docs</h4>
+<p class="mt-2 text-sm text-slate-500 dark:text-slate-400">The primary source of truth for any technology.</p>
+</a>
+</div>
+</div>
+<div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800">
+<div class="flex justify-between items-center mb-2">
+<h4 class="font-bold text-slate-800 dark:text-slate-100">Overall Progress</h4>
+<span class="text-sm font-bold text-primary">50%</span>
+</div>
+<div class="w-full bg-slate-200 dark:bg-slate-800 rounded-full h-2.5">
+<div class="bg-primary h-2.5 rounded-full" style="width: 50%"></div>
+</div>
+</div>
+<div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 text-center">
+<button class="w-full sm:w-auto px-6 py-3 text-sm font-bold bg-primary/10 dark:bg-primary/20 text-primary rounded-lg hover:bg-primary/20 dark:hover:bg-primary/30 transition-colors">Download PDF</button>
+<button class="w-full sm:w-auto px-6 py-3 text-sm font-bold bg-primary text-white rounded-lg hover:opacity-90 transition-opacity">Create Account to Track Progress</button>
+</div>
+</div>
+</main>
+</div>
+<div class="modal fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm" id="modal-basics">
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-lg m-4">
+<div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Resources for Month 1-2: Basics</h3>
+<a class="text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary transition-colors" href="#">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+</div>
+<div class="p-6 space-y-4">
+<a class="block p-4 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<h4 class="font-bold text-primary">FreeCodeCamp - Introduction to Programming</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400">A comprehensive introduction to the basic concepts of programming.</p>
+</a>
+<a class="block p-4 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<h4 class="font-bold text-primary">Codecademy - Learn to Code</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400">Interactive lessons to learn the fundamentals of web development.</p>
+</a>
+<a class="block p-4 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<h4 class="font-bold text-primary">The Odin Project - Foundations</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400">A full-stack curriculum that starts with the very basics.</p>
+</a>
+</div>
+<div class="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-b-xl text-right">
+<a class="px-4 py-2 text-sm font-bold bg-primary text-white rounded-lg hover:opacity-90 transition-opacity" href="#">Close</a>
+</div>
+</div>
+</div>
+<div class="modal fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm" id="modal-data">
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-lg m-4">
+<div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Resources for Month 3-4: Data Structures &amp; Algorithms</h3>
+<a class="text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary transition-colors" href="#">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+</div>
+<div class="p-6 space-y-4">
+<a class="block p-4 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<h4 class="font-bold text-primary">LeetCode</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400">Practice coding problems and prepare for technical interviews.</p>
+</a>
+<a class="block p-4 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<h4 class="font-bold text-primary">HackerRank</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400">Join a community of developers to solve coding challenges.</p>
+</a>
+</div>
+<div class="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-b-xl text-right">
+<a class="px-4 py-2 text-sm font-bold bg-primary text-white rounded-lg hover:opacity-90 transition-opacity" href="#">Close</a>
+</div>
+</div>
+</div>
+<div class="modal fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm" id="modal-frameworks">
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-lg m-4">
+<div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Resources for Month 5-6: Frameworks</h3>
+<a class="text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary transition-colors" href="#">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+</div>
+<div class="p-6 space-y-4">
+<a class="block p-4 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<h4 class="font-bold text-primary">Official Documentation (React, Vue, Angular)</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400">The best place to learn is from the source.</p>
+</a>
+<a class="block p-4 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<h4 class="font-bold text-primary">Udemy - Top-rated framework courses</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400">Comprehensive video courses with projects.</p>
+</a>
+</div>
+<div class="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-b-xl text-right">
+<a class="px-4 py-2 text-sm font-bold bg-primary text-white rounded-lg hover:opacity-90 transition-opacity" href="#">Close</a>
+</div>
+</div>
+</div>
+<div class="modal fixed inset-0 z-50 items-center justify-center bg-black/50 backdrop-blur-sm" id="modal-projects">
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-lg m-4">
+<div class="p-6 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Resources for Month 7-8: Projects</h3>
+<a class="text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary transition-colors" href="#">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+</div>
+<div class="p-6 space-y-4">
+<a class="block p-4 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<h4 class="font-bold text-primary">GitHub</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400">Explore open-source projects or start your own.</p>
+</a>
+<a class="block p-4 border border-slate-200 dark:border-slate-800 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" href="#">
+<h4 class="font-bold text-primary">Frontend Mentor</h4>
+<p class="text-sm text-slate-500 dark:text-slate-400">Solve real-world HTML, CSS and JavaScript challenges.</p>
+</a>
+</div>
+<div class="p-6 bg-slate-50 dark:bg-slate-900/50 rounded-b-xl text-right">
+<a class="px-4 py-2 text-sm font-bold bg-primary text-white rounded-lg hover:opacity-90 transition-opacity" href="#">Close</a>
+</div>
+</div>
+</div>
+
+</body></html>
