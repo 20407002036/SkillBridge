@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 🌐 Global Reset & Typography */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-gray-50 text-gray-800 font-inter antialiased;
+  }
+
+  h1, h2, h3, h4, h5 {
+    @apply font-semibold text-gray-900;
+  }
+
+  a {
+    @apply text-blue-600 hover:text-blue-700 transition-colors;
+  }
+}
+
+/* 🌊 Containers */
+@layer components {
+  .page-container {
+    @apply min-h-screen flex flex-col items-center justify-center bg-gray-50;
+  }
+
+  .card {
+    @apply bg-white shadow-md rounded-2xl p-8 w-full max-w-md md:max-w-lg;
+  }
+
+  .card-header {
+    @apply text-center mb-4;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 text-white font-medium py-2.5 px-5 rounded-lg hover:bg-blue-700 transition-all;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-100 text-gray-800 font-medium py-2.5 px-5 rounded-lg hover:bg-gray-200 transition-all;
+  }
+
+  .input-field {
+    @apply border border-gray-300 rounded-md w-full p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+
+  .nav-bar {
+    @apply flex justify-between items-center bg-white px-8 py-4 shadow-sm fixed w-full top-0 z-50;
+  }
+
+  .nav-links {
+    @apply flex gap-8 text-gray-700;
+  }
+
+  .nav-links li {
+    @apply hover:text-blue-600 transition-colors;
+  }
+
+  .section {
+    @apply py-24 px-6 md:px-12;
+  }
+
+  .hero-title {
+    @apply text-4xl md:text-5xl font-bold text-center mb-4;
+  }
+
+  .hero-subtitle {
+    @apply text-lg text-gray-600 text-center mb-8 max-w-xl mx-auto;
+  }
+
+  .loader-ring {
+    @apply w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin;
+  }
+}

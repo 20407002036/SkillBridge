@@ -1,0 +1,254 @@
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0b0f17, #101622);
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  transition: background 0.5s ease;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 0.8rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo .dot {
+  width: 10px;
+  height: 10px;
+  background-color: #2563eb;
+  border-radius: 50%;
+}
+
+.logo h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #475569;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s ease;
+}
+
+.nav-item.active,
+.nav-item:hover {
+  color: #2563eb;
+}
+
+.profile {
+  background: #eff6ff;
+  padding: 0.6rem;
+  border-radius: 50%;
+  color: #2563eb;
+  cursor: pointer;
+}
+.profile:hover {
+  background: #dbeafe;
+}
+
+.profile-logout {
+  cursor: pointer;
+  color: #ff6767;
+  transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.profile-logout:hover {
+  color: #ff8585;
+  transform: scale(1.05);
+}
+
+.profile-body {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  padding: 2.5rem 1rem;
+}
+
+.profile-card {
+  background: rgba(19, 26, 37, 0.85);
+  border-radius: 1rem;
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 650px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-5px);
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.avatar {
+  background: #1e2633;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 1rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(98, 218, 252, 0.2);
+}
+
+.profile-header h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.profile-header p {
+  font-size: 0.95rem;
+  color: #b1b4bd;
+}
+
+/* ✨ INPUT FIELD MAGIC ✨ */
+.profile-form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: #d3d6de;
+}
+
+.profile-form input,
+.profile-form textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  margin-top: 0.4rem;
+  background: #121823;
+  border: 1px solid #1e2633;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.profile-form input:focus,
+.profile-form textarea:focus {
+  border-color: #62dafc;
+  box-shadow: 0 0 8px rgba(98, 218, 252, 0.4);
+  background: #0e1420;
+}
+
+/* Buttons */
+.edit-btn,
+.save-btn,
+.cancel-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+}
+
+.edit-btn {
+  background: #62dafc;
+  color: #0b0f17;
+  box-shadow: 0 4px 12px rgba(98, 218, 252, 0.3);
+}
+
+.edit-btn:hover {
+  background: #7de5ff;
+  transform: scale(1.03);
+}
+
+.save-btn {
+  background: #5ad46f;
+  color: #000;
+  box-shadow: 0 4px 12px rgba(90, 212, 111, 0.3);
+}
+
+.save-btn:hover {
+  background: #74e68b;
+  transform: scale(1.03);
+}
+
+.cancel-btn {
+  background: #ff5a5a;
+  color: #fff;
+  margin-left: 10px;
+  box-shadow: 0 4px 12px rgba(255, 90, 90, 0.3);
+}
+
+.cancel-btn:hover {
+  background: #ff7777;
+  transform: scale(1.03);
+}
+
+/* Skills Section */
+.profile-info ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.5rem;
+}
+
+.profile-info ul li {
+  background: #1a2332;
+  color: #cfd3dd;
+  padding: 0.5rem 0.7rem;
+  text-align: center;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.profile-info ul li:hover {
+  background: #62dafc;
+  color: #000;
+}
+
+.profile-message {
+  text-align: center;
+  color: #62dafc;
+  margin-top: 1.5rem;
+  font-weight: 500;
+  animation: fadeIn 0.5s ease;
+}
+
+/* Subtle animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

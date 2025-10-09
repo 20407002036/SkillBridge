@@ -1,0 +1,93 @@
+.rec-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #222;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+  color: #2563eb;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+.rec-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.rec-header .icon {
+  color: #2563eb;
+  margin-right: 8px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  color: #2563eb;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.card ul li {
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn-section {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.error {
+  color: #dc2626;
+  font-weight: 600;
+}

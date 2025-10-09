@@ -1,15 +1,16 @@
 import React from 'react';
-import DashboardComponent from '../components/Dashboard';
+import DashboardComponent from '../features/dashboard/index.jsx';
+import Sidebar from '../components/Sidebar';
 
 const Dashboard = () => {
-    return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-7xl mx-auto">
-                <h1 className="text-3xl font-bold text-gray-900 mb-8">Your Skill Dashboard</h1>
-                <DashboardComponent />
-            </div>
-        </div>
-    );
+  return (
+    <div className="flex min-h-screen">
+      <Sidebar />
+      <main className="flex-1 ml-64 p-10 bg-gray-50">
+        <DashboardComponent />
+      </main>
+    </div>
+  );
 };
 
 export default Dashboard;

@@ -1,0 +1,109 @@
+/* ---------- GENERAL CONTAINER ---------- */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to bottom, #ffffff, #f0f4ff);
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ---------- CARD ---------- */
+.auth-card {
+  background: white;
+  padding: 40px 35px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  transition: all 0.3s ease;
+}
+
+.auth-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- TOGGLE BUTTONS ---------- */
+.toggle-buttons {
+  display: flex;
+  background: #f2f5ff;
+  border-radius: 12px;
+  padding: 3px;
+  margin-bottom: 25px;
+}
+
+.toggle-buttons button {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-buttons button.active {
+  background-color: #2563eb; /* blue-600 */
+  color: white;
+}
+
+.toggle-buttons button:hover {
+  background-color: #eaf0ff;
+}
+
+/* ---------- TITLES ---------- */
+.auth-card h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 5px;
+  color: #1e293b;
+}
+
+.auth-card p {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 30px;
+}
+
+/* ---------- FORM ---------- */
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.auth-card input {
+  padding: 12px 15px;
+  border: 1px solid #d4d7e5;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.auth-card input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* ---------- SUBMIT BUTTON ---------- */
+.auth-card button[type="submit"] {
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
+  transition: all 0.3s ease;
+}
+
+.auth-card button[type="submit"]:hover {
+  background-color: #1e40af;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+}

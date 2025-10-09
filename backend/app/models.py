@@ -1,8 +1,11 @@
+
 from flask_sqlalchemy import SQLAlchemy
 import uuid
 from datetime import datetime
 
 db = SQLAlchemy()
+
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

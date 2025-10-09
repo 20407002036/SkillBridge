@@ -1,6 +1,8 @@
 import re
 import difflib
-from typing import List, Dict, Set, Tuple
+
+from typing import List, Dict, Set, Tuple, Any
+from app.services import nlp
 
 
 def some_utility_function():
@@ -10,28 +12,21 @@ def some_utility_function():
 
 def compare_skills(user_skills: List[str], market_skills: List[str]) -> List[str]:
     """
-    Compare user skills with market demands and return missing skills.
-    
+    Compare user skills with market demands and return missing skills (case-insensitive, normalized).
     Args:
         user_skills: List of skills the user currently has
         market_skills: List of skills demanded by the market/job
-    
     Returns:
         List of skills that are missing from user's skillset
     """
-    # Normalize skills to lowercase for comparison
-    user_skills_normalized = {skill.lower().strip() for skill in user_skills}
-    market_skills_normalized = {skill.lower().strip() for skill in market_skills}
-    
-    # Find missing skills
+    user_skills_normalized = {normalize_skill_name(skill) for skill in user_skills}
+    market_skills_normalized = {normalize_skill_name(skill) for skill in market_skills}
     missing_skills = market_skills_normalized - user_skills_normalized
-    
     # Return original case market skills that are missing
     missing_original = []
     for market_skill in market_skills:
-        if market_skill.lower().strip() in missing_skills:
+        if normalize_skill_name(market_skill) in missing_skills:
             missing_original.append(market_skill)
-    
     return missing_original
 
 
@@ -93,28 +88,75 @@ def find_similar_skills(target_skill: str, skill_list: List[str], threshold: flo
     return similarities
 
 
-def extract_skills_from_text(text: str, skill_keywords: List[str]) -> List[str]:
+def extract_skills_from_text(text: str, skill_keywords: List[str] = None) -> List[str]:
     """
-    Extract skills from text based on keyword matching.
-    
+    Extract skills from text using the enhanced NLP module (token, phrase, and keyword matching).
     Args:
         text: Text to extract skills from
-        skill_keywords: List of known skill keywords
-    
+        skill_keywords: List of known skill keywords (optional)
     Returns:
         List of found skills
     """
-    found_skills = []
-    text_lower = text.lower()
-    
-    for skill in skill_keywords:
-        skill_lower = skill.lower()
-        # Use word boundaries to avoid partial matches
-        pattern = r'\b' + re.escape(skill_lower) + r'\b'
-        if re.search(pattern, text_lower):
-            found_skills.append(skill)
-    
-    return found_skills
+    return nlp.extract_skills(text, skill_keywords)
+
+def extract_entities_from_text(text: str) -> List[Dict[str, Any]]:
+    """
+    Extract named entities from text using the NLP module.
+    Args:
+        text: Text to extract entities from
+    Returns:
+        List of entities (dicts with 'text' and 'label')
+    """
+    return nlp.extract_entities(text)
+
+def extract_keywords_from_text(text: str, top_n: int = 10) -> List[str]:
+    """
+    Extract top keywords from text using the NLP module.
+    Args:
+        text: Text to extract keywords from
+        top_n: Number of keywords to return
+    Returns:
+        List of keywords
+    """
+    return nlp.extract_keywords(text, top_n=top_n)
+
+def clean_and_normalize_text(text: str) -> str:
+    """
+    Clean and normalize text for NLP processing using the NLP module.
+    Args:
+        text: Raw text
+    Returns:
+        Cleaned text
+    """
+    return nlp.clean_text(text)
+
+# High-level helper for skill gap analysis
+def get_skill_gap_analysis(user_text: str, job_text: str, skill_keywords: List[str] = None) -> Dict[str, Any]:
+    """
+    Extract skills from user and job text, compare, and return gap analysis.
+    Args:
+        user_text: Resume or profile text
+        job_text: Job description text
+        skill_keywords: Optional list of skills to match
+    Returns:
+        Dict with user_skills, job_skills, missing_skills, and recommendations
+    """
+    user_skills = extract_skills_from_text(user_text, skill_keywords)
+    job_skills = extract_skills_from_text(job_text, skill_keywords)
+    missing_skills = compare_skills(user_skills, job_skills)
+    recommendations = [
+        {
+            "skill": skill,
+            "resource": f"Learn {skill} at https://www.google.com/search?q={skill}+tutorial"
+        }
+        for skill in missing_skills
+    ]
+    return {
+        "user_skills": user_skills,
+        "job_skills": job_skills,
+        "missing_skills": missing_skills,
+        "recommendations": recommendations
+    }
 
 
 def categorize_skills(skills: List[str]) -> Dict[str, List[str]]:

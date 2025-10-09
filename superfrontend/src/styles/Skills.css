@@ -1,0 +1,133 @@
+.skills-container {
+  font-family: "Poppins", sans-serif;
+  padding: 0;
+  color: #fff;
+  background: #0b0f19;
+  min-height: 100vh;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 0.8rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo .dot {
+  width: 10px;
+  height: 10px;
+  background-color: #2563eb;
+  border-radius: 50%;
+}
+
+.logo h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #475569;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s ease;
+}
+
+.nav-item.active,
+.nav-item:hover {
+  color: #2563eb;
+}
+
+.profile {
+  background: #eff6ff;
+  padding: 0.6rem;
+  border-radius: 50%;
+  color: #2563eb;
+  cursor: pointer;
+}
+
+.skills-body {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.subtitle {
+  color: #94a3b8;
+  margin-bottom: 1.5rem;
+}
+
+.skills-section {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.skills-column {
+  flex: 1;
+  background: #111827;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.skill-item {
+  padding: 0.5rem 1rem;
+  background: #1e293b;
+  border-radius: 6px;
+  margin-bottom: 0.6rem;
+}
+.skill-item.tech { border-left: 3px solid #38bdf8; }
+.skill-item.soft { border-left: 3px solid #f472b6; }
+
+.add-skill-section {
+  margin-top: 2rem;
+  background: #111827;
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+.add-skill-form {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+.add-skill-form input, .add-skill-form select {
+  padding: 0.6rem;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  flex: 1;
+}
+.add-skill-form button {
+  background: #22d3ee;
+  color: #0f172a;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.add-skill-form button:hover {
+  background: #0ea5e9;
+}

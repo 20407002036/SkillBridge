@@ -1,0 +1,224 @@
+.roadmap-container {
+  max-width: 900px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.05);
+  color: #333;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.roadmap-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.roadmap-header h2 {
+  font-size: 2rem;
+  color: #004aad;
+  margin-bottom: 0.3rem;
+}
+
+.subtitle {
+  color: #555;
+}
+
+.progress-section {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.progress-bar {
+  width: 100%;
+  background: #eee;
+  border-radius: 10px;
+  height: 16px;
+  overflow: hidden;
+  margin: 0.7rem 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #007bff, #00b4d8);
+  transition: width 0.5s ease-in-out;
+}
+
+.current-stage,
+.completed-section,
+.upcoming-section {
+  margin-bottom: 2rem;
+}
+
+.stage-card {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+}
+
+.btn-continue {
+  margin-top: 0.8rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-continue:hover {
+  background: #0056b3;
+}
+
+.skills-list {
+  list-style: none;
+  padding: 0;
+}
+
+.skill-item {
+  background: #f0f0f0;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.skill-item.completed {
+  background: #e6ffed;
+  border-left: 5px solid #4caf50;
+}
+
+.skill-item.upcoming {
+  background: #fff7e6;
+  border-left: 5px solid #ff9800;
+}
+
+.roadmap-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.btn-edit {
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-edit:hover {
+  background: #f0f0f0;
+}
+
+.btn-recommend {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-recommend:hover {
+  background: #0056b3;
+}
+
+/* Loading + Error States */
+.roadmap-loading {
+  text-align: center;
+  padding: 4rem;
+  color: #666;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 5px solid #ddd;
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error {
+  color: red;
+  text-align: center;
+}
+
+.no-data {
+  color: #555;
+  text-align: center;
+}
+
+/* ===== Navbar Styles ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 0.8rem 2rem;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo .dot {
+  width: 10px;
+  height: 10px;
+  background-color: #2563eb;
+  border-radius: 50%;
+}
+
+.logo h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #475569;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s ease;
+}
+
+.nav-item.active,
+.nav-item:hover {
+  color: #2563eb;
+}
+
+.profile {
+  background: #eff6ff;
+  padding: 0.6rem;
+  border-radius: 50%;
+  color: #2563eb;
+  cursor: pointer;
+}
+.profile:hover {
+  background: #dbeafe;
+}
