@@ -82,6 +82,7 @@ class Roadmap(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     title = db.Column(db.String(200), nullable=False)
     estimated_total_duration_months = db.Column(db.Integer)
+    selected_skill_ids = db.Column(db.Text)  # JSON string of selected skill IDs
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     notes = db.Column(db.Text)
     is_saved = db.Column(db.Boolean, default=False)
@@ -98,7 +99,11 @@ class RoadmapPhase(db.Model):
     goals = db.Column(db.Text)  # JSON string
     resources = db.Column(db.Text)  # JSON string
     progress_percent = db.Column(db.Integer, default=0)
-    order_index = db.Column(db.Integer)
-    
-    # Create unique constraint on phase_id + roadmap_id combination
-    __table_args__ = (db.UniqueConstraint('phase_id', 'roadmap_id', name='uq_phase_roadmap'),)
+
+class PDFJob(db.Model):
+    id = db.Column(db.String(20), primary_key=True)  # pdf_job_abc123
+    roadmap_id = db.Column(db.String(20), db.ForeignKey('roadmap.id'), nullable=False)
+    status = db.Column(db.String(20), default='generating')  # generating, completed, failed
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    completed_at = db.Column(db.DateTime)
+    error_message = db.Column(db.Text)

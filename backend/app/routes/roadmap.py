@@ -1,8 +1,9 @@
-from flask import Blueprint, request, jsonify
-from app.models import db, Analysis, RoadmapJob, Roadmap, RoadmapPhase
-from app.tasks import generate_roadmap_task
+from flask import Blueprint, request, jsonify, send_file
+from app.models import db, Analysis, RoadmapJob, Roadmap, RoadmapPhase, PDFJob
+from app.tasks import generate_roadmap_task, generate_pdf_task
 import uuid
 import json
+import io
 
 roadmap_bp = Blueprint('roadmap', __name__)
 
@@ -109,7 +110,7 @@ def get_roadmap(roadmap_id):
             return jsonify({"error": "Roadmap not found"}), 404
         
         # Get roadmap phases
-        phases = RoadmapPhase.query.filter_by(roadmap_id=roadmap_id).order_by(RoadmapPhase.order_index).all()
+        phases = RoadmapPhase.query.filter_by(roadmap_id=roadmap_id).order_by(RoadmapPhase.phase_id).all()
         
         # Format phases data
         phases_data = []
@@ -131,12 +132,120 @@ def get_roadmap(roadmap_id):
             "user_id": roadmap.user_id,
             "title": roadmap.title,
             "estimated_total_duration_months": roadmap.estimated_total_duration_months,
+            "selected_skill_ids": json.loads(roadmap.selected_skill_ids or "[]"),
             "created_at": roadmap.created_at.isoformat() + "Z",
             "phases": phases_data,
             "notes": roadmap.notes
         }
         
         return jsonify(response_data), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@roadmap_bp.route('/roadmaps/<roadmap_id>/generate-pdf', methods=['POST'])
+def generate_pdf(roadmap_id):
+    """
+    Generate PDF for a specific roadmap
+    """
+    try:
+        # Check if roadmap exists
+        roadmap = Roadmap.query.get(roadmap_id)
+        if not roadmap:
+            return jsonify({"error": "Roadmap not found"}), 404
+        
+        # Generate unique PDF job ID
+        pdf_job_id = f"pdf_job_{uuid.uuid4().hex[:8]}"
+        
+        # Create PDF job record
+        pdf_job = PDFJob(
+            id=pdf_job_id,
+            roadmap_id=roadmap_id,
+            status='generating'
+        )
+        
+        db.session.add(pdf_job)
+        db.session.commit()
+        
+        # Start async PDF generation task
+        generate_pdf_task.delay(pdf_job_id, roadmap_id)
+        
+        return jsonify({
+            "pdf_job_id": pdf_job_id,
+            "status": "generating"
+        }), 201
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@roadmap_bp.route('/pdf-status/<pdf_job_id>', methods=['GET'])
+def get_pdf_status(pdf_job_id):
+    """
+    Check PDF generation status
+    """
+    try:
+        pdf_job = PDFJob.query.get(pdf_job_id)
+        if not pdf_job:
+            return jsonify({"error": "PDF job not found"}), 404
+        
+        response_data = {
+            "pdf_job_id": pdf_job_id,
+            "status": pdf_job.status,
+            "created_at": pdf_job.created_at.isoformat() + "Z"
+        }
+        
+        if pdf_job.completed_at:
+            response_data["completed_at"] = pdf_job.completed_at.isoformat() + "Z"
+        
+        if pdf_job.status == 'failed' and pdf_job.error_message:
+            response_data["error_message"] = pdf_job.error_message
+        
+        if pdf_job.status == 'completed':
+            response_data["download_url"] = f"/api/v1/download-pdf/{pdf_job_id}"
+        
+        return jsonify(response_data), 200
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@roadmap_bp.route('/download-pdf/<pdf_job_id>', methods=['GET'])
+def download_pdf(pdf_job_id):
+    """
+    Download generated PDF
+    """
+    try:
+        pdf_job = PDFJob.query.get(pdf_job_id)
+        if not pdf_job:
+            return jsonify({"error": "PDF job not found"}), 404
+        
+        if pdf_job.status != 'completed':
+            return jsonify({"error": "PDF not ready for download"}), 400
+        
+        # Get roadmap data for filename
+        roadmap = Roadmap.query.get(pdf_job.roadmap_id)
+        if not roadmap:
+            return jsonify({"error": "Associated roadmap not found"}), 404
+        
+        # Generate PDF content using the same task logic
+        from app.tasks import get_roadmap_data, generate_pdf_content
+        
+        roadmap_data = get_roadmap_data(pdf_job.roadmap_id)
+        pdf_content = generate_pdf_content(roadmap_data)
+        
+        # Create filename
+        safe_title = "".join(c for c in roadmap.title if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        filename = f"SkillBridge_Roadmap_{safe_title}_{roadmap.id}.pdf"
+        
+        # Return PDF as download
+        return send_file(
+            io.BytesIO(pdf_content),
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500

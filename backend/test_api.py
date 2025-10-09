@@ -14,9 +14,9 @@ def test_upload_resume():
     """Test endpoint 1: Upload resume"""
     print("Testing endpoint 1: Upload resume...")
     
-    pdf_url = '/home/kyo/Downloads/1_page_Resume.pdf'
+    pdf_url = '/home/kyo/Downloads/Resume (1).pdf'
     files = {'resume': open(pdf_url, 'rb')}
-    data = {'target_skill': 'Python Developer'}
+    data = {'target_skill': 'Data Science'}
     
     response = requests.post(f"{BASE_URL}/upload-resume", files=files, data=data)
     files['resume'].close()
@@ -86,7 +86,7 @@ def test_roadmap_status(roadmap_job_id):
     """Test endpoint 5: Check roadmap generation status"""
     print(f"\nTesting endpoint 5: Check roadmap status for {roadmap_job_id}...")
     
-    for i in range(10):  # Poll for up to 10 times
+    for i in range(20):  # Poll for up to 10 times
         response = requests.get(f"{BASE_URL}/roadmap/status/{roadmap_job_id}")
         print(f"Roadmap status check {i+1}: {response.json()}")
         
@@ -143,7 +143,67 @@ def main():
     # Get final roadmap
     test_get_roadmap(roadmap_id)
     
+    # Test PDF generation
+    test_pdf_generation(roadmap_id)
+    
     print("\n✅ All endpoints tested successfully!")
+
+
+def test_pdf_generation(roadmap_id):
+    """Test PDF generation endpoints"""
+    print(f"\nTesting PDF generation for roadmap: {roadmap_id}")
+    
+    # Start PDF generation
+    response = requests.post(f"{BASE_URL}/roadmaps/{roadmap_id}/generate-pdf")
+    print(f"PDF generation start - Status: {response.status_code}")
+    print(f"Response: {response.json()}")
+    
+    if response.status_code != 201:
+        print("❌ PDF generation failed to start")
+        return
+    
+    pdf_job_id = response.json()['pdf_job_id']
+    print(f"PDF Job ID: {pdf_job_id}")
+    
+    # Poll for completion
+    max_attempts = 30  # 60 seconds
+    for attempt in range(max_attempts):
+        print(f"Checking PDF status (attempt {attempt + 1}/{max_attempts})...")
+        
+        response = requests.get(f"{BASE_URL}/pdf-status/{pdf_job_id}")
+        
+        if response.status_code != 200:
+            print(f"❌ PDF status check failed: {response.status_code}")
+            return
+        
+        status_data = response.json()
+        print(f"PDF Status: {status_data['status']}")
+        
+        if status_data['status'] == 'completed':
+            print("✅ PDF generation completed!")
+            
+            # Test download
+            download_response = requests.get(f"{BASE_URL}/download-pdf/{pdf_job_id}")
+            if download_response.status_code == 200:
+                print("✅ PDF download successful!")
+                print(f"PDF size: {len(download_response.content)} bytes")
+                
+                # Optionally save PDF for testing
+                with open(f"test_roadmap_{roadmap_id}.pdf", "wb") as f:
+                    f.write(download_response.content)
+                print(f"PDF saved as test_roadmap_{roadmap_id}.pdf")
+            else:
+                print(f"❌ PDF download failed: {download_response.status_code}")
+            break
+            
+        elif status_data['status'] == 'failed':
+            print(f"❌ PDF generation failed: {status_data.get('error_message', 'Unknown error')}")
+            break
+        
+        time.sleep(2)
+    else:
+        print("❌ PDF generation timed out")
+
 
 if __name__ == "__main__":
     main()
