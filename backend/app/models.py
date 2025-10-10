@@ -1,5 +1,6 @@
 
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 from datetime import datetime
 
@@ -9,11 +10,28 @@ db = SQLAlchemy()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128))
     name = db.Column(db.String(100))
-    email = db.Column(db.String(120))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Link to analysis_id if user created account after generating a roadmap
+    linked_analysis_id = db.Column(db.String(36), db.ForeignKey('analysis.id'), nullable=True)
     skills = db.relationship('Skill', backref='user', lazy=True)
     roadmaps = db.relationship('Roadmap', backref='user', lazy=True)
+    # Relationship to the linked analysis
+    linked_analysis = db.relationship('Analysis', foreign_keys=[linked_analysis_id], backref='linked_user')
+    
+    def set_password(self, password):
+        """Set password hash from plain password"""
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        """Check if provided password matches hash"""
+        return check_password_hash(self.password_hash, password)
+    
+    def __repr__(self):
+        return f'<User {self.username}>'
 
 class Skill(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -82,6 +100,7 @@ class Roadmap(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     title = db.Column(db.String(200), nullable=False)
     estimated_total_duration_months = db.Column(db.Integer)
+    weekly_hours = db.Column(db.Integer)  # Weekly commitment hours from frontend
     selected_skill_ids = db.Column(db.Text)  # JSON string of selected skill IDs
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     notes = db.Column(db.Text)

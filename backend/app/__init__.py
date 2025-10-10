@@ -16,8 +16,12 @@ def create_app():
         MAX_CONTENT_LENGTH=16 * 1024 * 1024  # 16MB max file size
     )
     
-    # Enable CORS
-    CORS(app)
+    # Enable CORS for all routes (allow frontend dev server)
+    CORS(app, 
+         origins=['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5173', 'http://127.0.0.1:5173'],
+         supports_credentials=True,
+         allow_headers=['Content-Type', 'Authorization'],
+         methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
     
     # Initialize database
     from .models import db
@@ -31,10 +35,13 @@ def create_app():
         db.create_all()
 
     # Register blueprints
-    from .routes import profile, jobdata, gap, recommend
+    from .routes import profile, jobdata, gap, recommend, auth, password, avatar
     from .routes import analysis, skills, roadmap  # New routes
     
-    app.register_blueprint(profile.profile_bp, url_prefix='/api/v1')
+    app.register_blueprint(auth.auth_bp, url_prefix='/api/auth')
+    app.register_blueprint(password.password_bp, url_prefix='/api/password')
+    app.register_blueprint(avatar.avatar_bp, url_prefix='/api/avatar')
+    app.register_blueprint(profile.profile_bp, url_prefix='/api/user')
     app.register_blueprint(jobdata.jobdata_bp, url_prefix='/api/v1')
     app.register_blueprint(gap.gap_bp, url_prefix='/api/v1')
     app.register_blueprint(recommend.recommend_bp, url_prefix='/api/v1')

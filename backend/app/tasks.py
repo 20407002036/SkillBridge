@@ -141,6 +141,7 @@ def generate_roadmap_task(self, roadmap_job_id: str, analysis_id: str, selected_
                 user_id=analysis.user_id,
                 title=roadmap_data['title'],
                 estimated_total_duration_months=roadmap_data['estimated_total_duration_months'],
+                weekly_hours=preferences.get('weekly_hours', 10),  # Get weekly hours from preferences
                 selected_skill_ids=json.dumps(selected_skill_ids),  # Store selected skills
                 notes=roadmap_data['notes']
             )

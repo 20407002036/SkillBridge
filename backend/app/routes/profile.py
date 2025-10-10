@@ -153,15 +153,12 @@ def get_profile():
 
     profile = {
         'id': user.id,
-        'name': user.username,
+        'username': user.username,
         'email': user.email,
-        'location': user.location,
-        'bio': user.bio,
-        'skills': [{"name": s.name, "type": s.type} for s in user.skills],
-        'education': json.loads(user.education) if user.education else [],
-        'experience': json.loads(user.experience) if user.experience else [],
-        'resume_url': user.resume_url,
-        'image_url': user.image_url
+        'name': user.name,
+        'created_at': user.created_at.isoformat() + 'Z' if user.created_at else None,
+        'linked_analysis_id': user.linked_analysis_id,
+        'skills': [{"name": s.name} for s in user.skills] if user.skills else []
     }
     return jsonify(profile), 200
 
@@ -175,7 +172,7 @@ def update_profile():
     data = request.get_json()
 
     # Update allowed fields
-    user.username = data.get('name', user.username)
+    user.username = data.get('username', user.username)
     user.email = data.get('email', user.email)
     user.location = data.get('location', user.location)
     user.bio = data.get('bio', user.bio)
@@ -189,7 +186,7 @@ def update_profile():
 
     profile = {
         'id': user.id,
-        'name': user.username,
+        'username': user.username,
         'email': user.email,
         'location': user.location,
         'bio': user.bio,

@@ -132,11 +132,16 @@ def get_roadmap(roadmap_id):
             "user_id": roadmap.user_id,
             "title": roadmap.title,
             "estimated_total_duration_months": roadmap.estimated_total_duration_months,
+            "weekly_hours": roadmap.weekly_hours,
             "selected_skill_ids": json.loads(roadmap.selected_skill_ids or "[]"),
             "created_at": roadmap.created_at.isoformat() + "Z",
             "phases": phases_data,
             "notes": roadmap.notes
         }
+
+        print("*"*80)
+        print(json.dumps(response_data, indent=4))
+        print("*"*80)
         
         return jsonify(response_data), 200
         

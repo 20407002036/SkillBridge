@@ -131,7 +131,10 @@ Respond ONLY with valid JSON, no additional text.
         learning_style = preferences.get('learning_style', 'mixed')
         
         return f"""
-You are an expert learning path designer. Create a personalized learning roadmap based on the following information:
+You are an expert learning path designer. Analyze the following information and generate a personalized, realistic learning roadmap for the user.
+
+Goal:
+Design a structured roadmap that helps the user progress from their current level to mastery of the selected skills, considering their time availability and preferred learning style.
 
 SELECTED SKILLS: {', '.join(selected_skills)}
 USER PROFILE: {json.dumps(user_profile)}
@@ -140,51 +143,49 @@ PREFERENCES:
 - Target duration: {target_months} months
 - Learning style: {learning_style}
 
-Create a JSON response with this structure:
+Return ONLY valid JSON with this structure:
 
-{{
-    "title": "descriptive roadmap title",
-    "estimated_total_duration_months": {target_months},
-    "phases": [
-        {{
-            "phase_id": "p1",
-            "title": "Phase 1: Foundation Building",
-            "duration_weeks": number,
-            "goals": [
-                "specific learning goal 1",
-                "specific learning goal 2"
-            ],
-            "resources": [
-                {{
-                    "type": "COURSE|BOOK|PROJECT|ARTICLE|VIDEO|PRACTICE",
-                    "source": "platform/publisher",
-                    "title": "resource title",
-                    "url": "actual_url_if_available",
-                    "estimated_hours": number
-                }}
-            ],
-            "progress_percent": 0
-        }}
-    ],
-    "notes": "personalized advice and tips"
-}}
+{
+  "title": "Descriptive roadmap title",
+  "estimated_total_duration_months": {target_months},
+  "phases": [
+    {
+      "phase_id": "p1",
+      "title": "Phase 1: Foundation Building",
+      "duration_weeks": number,
+      "goals": [
+        "specific learning goal 1",
+        "specific learning goal 2"
+      ],
+      "resources": [
+        {
+          "type": "COURSE|BOOK|PROJECT|ARTICLE|VIDEO|PRACTICE",
+          "source": "platform or publisher",
+          "title": "resource title",
+          "url": "actual_url_if_available_or_blank",
+          "estimated_hours": number
+        }
+      ],
+      "progress_percent": 0
+    }
+  ],
+  "notes": "personalized advice and tips"
+}
 
 Guidelines:
-1. Create 3-4 logical learning phases
-2. Each phase should focus on 1-2 related skills
-3. Provide specific, actionable goals (3-4 per phase)
-4. Include diverse resource types based on learning style
-5. Use real resources with actual URLs when possible
-6. Consider the user's current level and weekly time commitment
-7. Make phases progressive and build upon each other
-8. Total duration should align with target months
+1. Create 3-4 logical learning phases that build progressively.
+2. Each phase should focus on 1-2 related skills.
+3. Provide 3-4 actionable goals per phase.
+4. Include at least 2 resource types per phase (e.g. COURSE + PROJECT + ARTICLE).
+5. Use real, publicly available resources with legitimate URLs when possible.
+6. If a specific link is unknown, leave the URL blank or use a verified domain homepage.
+7. Consider user's current level, weekly hours, and target duration when allocating time.
+8. Adapt recommendations based on learning style:
+   - project_based → emphasize hands-on practice and projects
+   - theory_first → prioritize structured courses and readings
+   - mixed → balance both
+9. Return only valid JSON — no explanations or text outside the JSON.
 
-Learning Style Notes:
-- project_based: Focus on hands-on projects and practical resources
-- theory_first: Emphasize courses, books, and foundational knowledge
-- mixed: Balance theory and practice
-
-Respond ONLY with valid JSON, no additional text.
 """
     
     def _call_gemini_with_retry(self, prompt: str) -> str:

@@ -246,13 +246,120 @@ Retrieve mock job posting data with required skills.
 ```http
 POST /api/v1/auth/register
 ```
-*(Planned)* Register new user account.
+Register new user account with optional analysis linking.
+
+**Request** `application/json`
+```json
+{
+  "username": "johndoe",
+  "email": "john@example.com", 
+  "password": "securepassword123",
+  "analysis_id": "a3f9b231-23cd-45fe-a9b3-2345cfa21d22"  // optional - links previous roadmap
+}
+```
+
+**Response** `201 Created`
+```json
+{
+  "message": "User registered successfully and linked to previous roadmap analysis",
+  "linked_analysis_id": "a3f9b231-23cd-45fe-a9b3-2345cfa21d22"
+}
+```
 
 #### Login User
 ```http
 POST /api/v1/auth/login
 ```
-*(Planned)* Authenticate user and return JWT token.
+Authenticate user and return JWT token.
+
+**Request** `application/json`
+```json
+{
+  "email": "john@example.com",
+  "password": "securepassword123"
+}
+```
+
+**Response** `200 OK`
+```json
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "user": {
+    "id": 123,
+    "username": "johndoe", 
+    "email": "john@example.com"
+  }
+}
+```
+
+#### Get User's Linked Analysis
+```http
+GET /api/v1/auth/user/linked-analysis
+Authorization: Bearer <token>
+```
+Retrieve the user's linked analysis and associated roadmaps.
+
+**Response** `200 OK`
+```json
+{
+  "user_id": 123,
+  "linked_analysis_id": "a3f9b231-23cd-45fe-a9b3-2345cfa21d22",
+  "analysis": {
+    "target_skill": "Python Developer",
+    "status": "completed",
+    "created_at": "2025-10-08T10:30:00Z",
+    "completed_at": "2025-10-08T10:35:00Z"
+  },
+  "roadmaps": [
+    {
+      "roadmap_id": "rm_8523ab",
+      "title": "Python Developer Roadmap",
+      "estimated_total_duration_months": 6,
+      "created_at": "2025-10-08T10:40:00Z",
+      "is_saved": true
+    }
+  ],
+  "message": "Linked analysis and roadmaps retrieved successfully"
+}
+```
+
+#### Link Analysis to User
+```http
+POST /api/v1/auth/user/link-analysis
+Authorization: Bearer <token>
+```
+Manually link an existing analysis to the authenticated user.
+
+**Request** `application/json`
+```json
+{
+  "analysis_id": "a3f9b231-23cd-45fe-a9b3-2345cfa21d22"
+}
+```
+
+**Response** `200 OK`
+```json
+{
+  "message": "Analysis linked to user successfully",
+  "analysis_id": "a3f9b231-23cd-45fe-a9b3-2345cfa21d22",
+  "linked_roadmaps_count": 2
+}
+```
+
+#### Unlink Analysis from User
+```http
+POST /api/v1/auth/user/unlink-analysis
+Authorization: Bearer <token>
+```
+Unlink the current analysis from the authenticated user.
+
+**Response** `200 OK`
+```json
+{
+  "message": "Analysis unlinked from user successfully",
+  "unlinked_analysis_id": "a3f9b231-23cd-45fe-a9b3-2345cfa21d22"
+}
+```
 
 #### Get User Profile
 ```http

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.models import db, User
+from app.models import db, User, Analysis
 import jwt
 import datetime
 from flask import current_app
@@ -13,6 +13,7 @@ def register():
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
+    analysis_id = data.get('analysis_id')  # Optional analysis_id from roadmap generation
 
     if not username or not email or not password:
         return jsonify({'error': 'Missing required fields'}), 400
@@ -20,12 +21,45 @@ def register():
     if User.query.filter((User.username == username) | (User.email == email)).first():
         return jsonify({'error': 'User already exists'}), 409
 
-    hashed_password = generate_password_hash(password)
-    user = User(username=username, email=email, password_hash=hashed_password)
-    db.session.add(user)
-    db.session.commit()
+    print(f"Registration attempt - analysis_id: {analysis_id}")
 
-    return jsonify({'message': 'User registered successfully'}), 201
+    # Validate analysis_id if provided
+    linked_analysis = None
+    if analysis_id:
+        print(f"Looking for analysis with ID: {analysis_id}")
+        linked_analysis = Analysis.query.get(analysis_id)
+        if not linked_analysis:
+            print(f"Analysis {analysis_id} not found in database")
+            return jsonify({'error': 'Invalid analysis_id provided'}), 400
+        print(f"Found analysis: {linked_analysis.id}, status: {linked_analysis.status}")
+        if linked_analysis.status != 'completed':
+            print(f"Analysis {analysis_id} not completed yet")
+            return jsonify({'error': 'Analysis must be completed before linking to account'}), 400
+
+    hashed_password = generate_password_hash(password)
+    user = User(
+        username=username, 
+        email=email, 
+        password_hash=hashed_password,
+        linked_analysis_id=analysis_id if linked_analysis else None
+    )
+    print(f"Creating user with linked_analysis_id: {user.linked_analysis_id}")
+    db.session.add(user)
+    
+    # If linking to an analysis, also update the analysis with the new user_id
+    if linked_analysis:
+        linked_analysis.user_id = user.id
+        print(f"Updated analysis {linked_analysis.id} with user_id: {user.id}")
+    
+    db.session.commit()
+    print(f"User {user.id} created successfully")
+
+    response_data = {'message': 'User registered successfully'}
+    if analysis_id:
+        response_data['linked_analysis_id'] = analysis_id
+        response_data['message'] = 'User registered successfully and linked to previous roadmap analysis'
+
+    return jsonify(response_data), 201
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
@@ -46,3 +80,187 @@ def login():
     }, current_app.config['SECRET_KEY'], algorithm='HS256')
 
     return jsonify({'token': token, 'user': {'id': user.id, 'username': user.username, 'email': user.email}}), 200
+
+@auth_bp.route('/user/linked-analysis', methods=['GET'])
+def get_user_linked_analysis():
+    """
+    Get the user's linked analysis and associated roadmaps
+    Requires authentication token
+    """
+    try:
+        # Extract token from Authorization header
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({'error': 'Authorization token required'}), 401
+        
+        token = auth_header.split(' ')[1]
+        
+        try:
+            payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            user_id = payload['user_id']
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token has expired'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Invalid token'}), 401
+        
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        
+        if not user.linked_analysis_id:
+            return jsonify({
+                'user_id': user.id,
+                'linked_analysis_id': None,
+                'message': 'No linked analysis found'
+            }), 200
+        
+        # Get the linked analysis
+        analysis = user.linked_analysis
+        if not analysis:
+            return jsonify({'error': 'Linked analysis not found'}), 404
+        
+        # Get roadmaps associated with this analysis
+        from app.models import Roadmap
+        roadmaps = Roadmap.query.filter_by(analysis_id=analysis.id).all()
+        
+        roadmap_data = []
+        for roadmap in roadmaps:
+            roadmap_data.append({
+                'roadmap_id': roadmap.id,
+                'title': roadmap.title,
+                'estimated_total_duration_months': roadmap.estimated_total_duration_months,
+                'created_at': roadmap.created_at.isoformat() + 'Z',
+                'is_saved': roadmap.is_saved
+            })
+        
+        return jsonify({
+            'user_id': user.id,
+            'linked_analysis_id': analysis.id,
+            'analysis': {
+                'target_skill': analysis.target_skill,
+                'status': analysis.status,
+                'created_at': analysis.created_at.isoformat() + 'Z',
+                'completed_at': analysis.completed_at.isoformat() + 'Z' if analysis.completed_at else None
+            },
+            'roadmaps': roadmap_data,
+            'message': 'Linked analysis and roadmaps retrieved successfully'
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@auth_bp.route('/user/link-analysis', methods=['POST'])
+def link_analysis_to_user():
+    """
+    Link an existing analysis to the authenticated user
+    Useful for cases where users generated roadmaps before creating accounts
+    """
+    try:
+        # Extract token from Authorization header
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({'error': 'Authorization token required'}), 401
+        
+        token = auth_header.split(' ')[1]
+        
+        try:
+            payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            user_id = payload['user_id']
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token has expired'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Invalid token'}), 401
+        
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        
+        data = request.get_json()
+        analysis_id = data.get('analysis_id')
+        
+        if not analysis_id:
+            return jsonify({'error': 'analysis_id is required'}), 400
+        
+        # Validate analysis exists and is completed
+        analysis = Analysis.query.get(analysis_id)
+        if not analysis:
+            return jsonify({'error': 'Analysis not found'}), 404
+        
+        if analysis.status != 'completed':
+            return jsonify({'error': 'Analysis must be completed before linking'}), 400
+        
+        # Check if analysis is already linked to another user
+        if analysis.user_id and analysis.user_id != user_id:
+            return jsonify({'error': 'Analysis is already linked to another user'}), 409
+        
+        # Check if user already has a linked analysis
+        if user.linked_analysis_id and user.linked_analysis_id != analysis_id:
+            return jsonify({'error': 'User already has a linked analysis. Unlink first.'}), 409
+        
+        # Link the analysis to the user
+        user.linked_analysis_id = analysis_id
+        analysis.user_id = user_id
+        
+        # Also update any roadmaps associated with this analysis to link to the user
+        from app.models import Roadmap
+        roadmaps = Roadmap.query.filter_by(analysis_id=analysis_id).all()
+        for roadmap in roadmaps:
+            roadmap.user_id = user_id
+        
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Analysis linked to user successfully',
+            'analysis_id': analysis_id,
+            'linked_roadmaps_count': len(roadmaps)
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@auth_bp.route('/user/unlink-analysis', methods=['POST'])
+def unlink_analysis_from_user():
+    """
+    Unlink the current analysis from the authenticated user
+    """
+    try:
+        # Extract token from Authorization header
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer '):
+            return jsonify({'error': 'Authorization token required'}), 401
+        
+        token = auth_header.split(' ')[1]
+        
+        try:
+            payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            user_id = payload['user_id']
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token has expired'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Invalid token'}), 401
+        
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        
+        if not user.linked_analysis_id:
+            return jsonify({'error': 'No linked analysis to unlink'}), 400
+        
+        # Get the linked analysis
+        analysis = Analysis.query.get(user.linked_analysis_id)
+        old_analysis_id = user.linked_analysis_id
+        
+        # Unlink from user
+        user.linked_analysis_id = None
+        if analysis:
+            analysis.user_id = None
+        
+        db.session.commit()
+        
+        return jsonify({
+            'message': 'Analysis unlinked from user successfully',
+            'unlinked_analysis_id': old_analysis_id
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
