@@ -9,6 +9,7 @@ export default function AuthPage() {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [hasPendingAnalysis, setHasPendingAnalysis] = useState(false);
   const navigate = useNavigate();
 
   // Auto-redirect if user already authenticated
@@ -16,8 +17,14 @@ export default function AuthPage() {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("username");
     if (token && user) {
-      navigate("/profile"); // persistent login redirect
+      // Use timeout to prevent navigation during initial render
+      setTimeout(() => navigate("/dashboard"), 100);
     }
+
+    // Check for pending analysis to link
+    const pendingAnalysisId = localStorage.getItem("current_analysis_id") || 
+                             sessionStorage.getItem("analysis_id");
+    setHasPendingAnalysis(!!pendingAnalysisId);
   }, [navigate]);
 
   const handleSubmit = async (e) => {
@@ -26,10 +33,24 @@ export default function AuthPage() {
     setMessage("");
 
     try {
+      // Check if there's a pending analysis_id to link (from previous roadmap generation)
+      const pendingAnalysisId = localStorage.getItem("current_analysis_id") || 
+                               sessionStorage.getItem("analysis_id");
+      
+      console.log("Pending analysis ID for linking:", pendingAnalysisId);
+
       // Prepare payload
       const payload = isLogin
         ? { email: form.email, password: form.password }
-        : { username: form.username, email: form.email, password: form.password };
+        : { 
+            username: form.username, 
+            email: form.email, 
+            password: form.password,
+            // Include analysis_id for registration if available
+            ...(pendingAnalysisId && { analysis_id: pendingAnalysisId })
+          };
+      
+      console.log("Auth payload:", payload);
 
       // API endpoint
       const url = isLogin
@@ -41,6 +62,8 @@ export default function AuthPage() {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
+      
+      console.log("Auth response:", res.data);
 
       const userData = res.data.user || res.data;
 
@@ -53,15 +76,47 @@ export default function AuthPage() {
 
       localStorage.setItem("token", res.data.token || "");
       localStorage.setItem("user", JSON.stringify(userObj));
+      localStorage.setItem("username", userObj.username);
+      localStorage.setItem("email", userObj.email);
+      localStorage.setItem("userId", userObj.id);
 
-      setMessage(
-        isLogin
-          ? `Welcome back, ${userObj.username || "User"}!`
-          : "Registration successful! Redirecting to your profile..."
-      );
+      // Handle success messages
+      let successMessage = "";
+      if (isLogin) {
+        successMessage = `Welcome back, ${userObj.username || "User"}!`;
+      } else {
+        // Registration success message
+        if (res.data.linked_analysis_id) {
+          successMessage = "Registration successful! Your previous roadmap has been linked to your account.";
+          // Clear the pending analysis_id since it's now linked
+          localStorage.removeItem("current_analysis_id");
+          sessionStorage.removeItem("analysis_id");
+        } else {
+          successMessage = "Registration successful! Redirecting to your dashboard...";
+        }
+      }
 
-      // Redirect after success
-      setTimeout(() => navigate("/profile"), 1200);
+      setMessage(successMessage);
+
+      // For login, check if user has linked analysis and redirect accordingly
+      if (isLogin) {
+        try {
+          // Check for linked analysis
+          const linkedAnalysisRes = await axios.get("/api/auth/user/linked-analysis", {
+            headers: { "Authorization": `Bearer ${res.data.token}` }
+          });
+          
+          if (linkedAnalysisRes.data.linked_analysis_id) {
+            setMessage(`Welcome back, ${userObj.username}! Your previous roadmaps are ready.`);
+          }
+        } catch (error) {
+          // If linked analysis check fails, continue with normal flow
+          console.log("No linked analysis found or error:", error.response?.data);
+        }
+      }
+
+      // Redirect after success - always go to dashboard
+      setTimeout(() => navigate("/dashboard"), 1200);
 
     } catch (err) {
       console.error("Auth error:", err.response?.data || err.message);
@@ -100,6 +155,13 @@ export default function AuthPage() {
             ? "Log in to continue your journey"
             : "Start your learning adventure today"}
         </p>
+
+        {/* Show pending analysis notification for registration */}
+        {!isLogin && hasPendingAnalysis && (
+          <div className="pending-analysis-notice">
+            <p>🎯 <strong>Great news!</strong> Your roadmap will be linked to your new account.</p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           {!isLogin && (

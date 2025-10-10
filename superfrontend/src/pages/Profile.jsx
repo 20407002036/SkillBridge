@@ -8,7 +8,7 @@ import "../styles/Profile.css";
 const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState({
-    name: "",
+    username: "",
     email: "",
     bio: "",
     skills: [],
@@ -22,7 +22,7 @@ const Profile = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const storedUser = {
-      name: localStorage.getItem("username") || "",
+      username: localStorage.getItem("username") || "",
       email: localStorage.getItem("email") || "",
     };
     setUser((prev) => ({ ...prev, ...storedUser }));
@@ -59,7 +59,7 @@ const Profile = () => {
       const res = await axios.put(
         "http://127.0.0.1:5000/api/user/profile",
         {
-          name: user.name,
+          username: user.username,
           email: user.email,
           bio: user.bio,
           skills: user.skills,
@@ -75,7 +75,7 @@ const Profile = () => {
       );
 
       // Update localStorage for instant sync
-      localStorage.setItem("username", user.name);
+      localStorage.setItem("username", user.username);
       localStorage.setItem("email", user.email);
 
       setMessage("Profile updated successfully!");
@@ -146,20 +146,20 @@ const Profile = () => {
             <div className="avatar">
               <User size={40} />
             </div>
-            <h2>{user.name || "User"}</h2>
+            <h2>{user.username || "User"}</h2>
             <p>{user.email}</p>
           </div>
 
           {editing ? (
             <form className="profile-form" onSubmit={handleUpdate}>
               <label>
-                Name:
+                Username:
                 <input
                   type="text"
-                  name="name"
-                  value={user.name}
+                  name="username"
+                  value={user.username}
                   onChange={handleChange}
-                  placeholder="Enter your name"
+                  placeholder="Enter your username"
                   required
                 />
               </label>

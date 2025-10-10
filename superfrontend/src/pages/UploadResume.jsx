@@ -39,6 +39,9 @@ export default function UploadResume() {
         const { analysis_id } = res.data;
         setStatus("Resume uploaded successfully! Redirecting to analysis...");
         
+        // Store analysis_id in localStorage for potential account linking
+        localStorage.setItem("current_analysis_id", analysis_id);
+        
         // Navigate to loading screen with analysis_id
         setTimeout(() => {
           navigate(`/loading?analysis_id=${analysis_id}&type=analysis`);

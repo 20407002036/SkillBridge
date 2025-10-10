@@ -14,6 +14,11 @@ const LoadingScreen = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    // Store analysis_id in localStorage if it's not already stored
+    if (analysisId && !localStorage.getItem("current_analysis_id")) {
+      localStorage.setItem("current_analysis_id", analysisId);
+    }
+    
     if (type === 'analysis' && analysisId) {
       pollAnalysisStatus(analysisId);
     } else if (type === 'roadmap' && roadmapJobId) {
