@@ -267,6 +267,59 @@ REACT_APP_API_URL=http://127.0.0.1:5000/api/v1
 
 ---
 
+## 🎨 UI Screenshots & Interface Preview
+
+### 🖼️ Application Interface
+
+**SkillBridge** features a modern, responsive user interface designed for optimal user experience across all devices. Below are screenshots of key application pages:
+
+#### 🏠 Landing Page
+![Landing Page](docs/SkillBridgeUi/Landing_page.png)
+*Clean, professional landing page introducing SkillBridge's core value proposition*
+
+#### 📤 Resume Upload Interface  
+![Upload Resume](docs/SkillBridgeUi/upload_resume.png)
+*Intuitive drag-and-drop resume upload with target career selection*
+
+#### ⏳ Processing Screen
+![Loading Screen](docs/SkillBridgeUi/loading_screen.png)
+*Real-time status updates during AI analysis with progress indicators*
+
+#### 🎯 Skill Recommendations
+![Recommended Skills](docs/SkillBridgeUi/Recomended_skills.png)
+*AI-generated skill recommendations with confidence scores and difficulty levels*
+
+#### 🗺️ Personalized Learning Roadmap
+![Personalized Roadmap](docs/SkillBridgeUi/personalized_roadmap.png)
+*Comprehensive learning roadmap with phases, timelines, and resource recommendations*
+
+#### 📊 Interactive Dashboard
+![Dashboard](docs/SkillBridgeUi/dashboard.png)
+*User progress tracking with analytics and skill development visualization*
+
+#### 🔐 Authentication System
+![Authentication](docs/SkillBridgeUi/Authentication.png)
+*Secure user authentication and profile management interface*
+
+### 🎨 UI Design Features
+- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **Modern Aesthetics**: Clean, professional interface using TailwindCSS
+- **Accessibility**: WCAG compliant with proper contrast and keyboard navigation
+- **Interactive Elements**: Smooth animations and intuitive user interactions
+- **Dark/Light Themes**: Adaptive themes for user preference (planned)
+
+### 📱 Interactive Mockups
+Explore the complete UI experience with our interactive mockups:
+- [Landing Page Demo](docs/SkillBridgeUi/Landing_page.html)
+- [Resume Upload Flow](docs/SkillBridgeUi/upload_resume.html)
+- [Loading Experience](docs/SkillBridgeUi/loading_screen.html)
+- [Skill Selection Interface](docs/SkillBridgeUi/Recomended_skills.html)
+- [Roadmap Visualization](docs/SkillBridgeUi/personalized_roadmap.html)
+- [Dashboard Overview](docs/SkillBridgeUi/dashboard.html)
+- [Authentication Flow](docs/SkillBridgeUi/Authentication.html)
+
+---
+
 ## 🧪 Example API Response
 
 ### Skill Recommendations

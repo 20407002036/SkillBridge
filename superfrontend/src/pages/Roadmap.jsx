@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "../axiosConfig";
-import { CheckCircle, Circle, Clock, BookOpen, Target, Calendar } from "lucide-react";
+import { CheckCircle, Circle, Clock, BookOpen, Target, Calendar, ChevronDown, ChevronUp } from "lucide-react";
 import "../styles/Roadmap.css";
 
 const Roadmap = () => {
@@ -13,6 +13,7 @@ const Roadmap = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [collapsedGoals, setCollapsedGoals] = useState(new Set());
 
   useEffect(() => {
     // Check authentication status
@@ -41,6 +42,23 @@ const Roadmap = () => {
 
     fetchRoadmap();
   }, [roadmapId]);
+
+  // Initialize collapsed state for display phases when roadmap data changes
+  useEffect(() => {
+    if (roadmap?.phases && roadmap.phases.length > 0) {
+      const allPhaseIds = new Set(roadmap.phases.map((phase, index) => phase.phase_id || index));
+      setCollapsedGoals(allPhaseIds);
+    }
+  }, [roadmap]);
+
+  // Handle mock data initialization when no real roadmap data exists
+  useEffect(() => {
+    if (!roadmap && !loading) {
+      // Initialize for mock data (development mode)
+      const mockPhaseIds = new Set([1, 2, 3]); // Mock phase IDs
+      setCollapsedGoals(mockPhaseIds);
+    }
+  }, [roadmap, loading]);
 
   const handleStartLearning = () => {
     // Navigate to dashboard with the roadmap
@@ -117,6 +135,16 @@ const Roadmap = () => {
   const handleCreateAccount = () => {
     // Navigate to authentication page with signup mode
     navigate('/auth?mode=signup');
+  };
+
+  const toggleGoalsCollapse = (phaseId) => {
+    const newCollapsed = new Set(collapsedGoals);
+    if (newCollapsed.has(phaseId)) {
+      newCollapsed.delete(phaseId);
+    } else {
+      newCollapsed.add(phaseId);
+    }
+    setCollapsedGoals(newCollapsed);
   };
 
   if (loading) {
@@ -369,19 +397,44 @@ const Roadmap = () => {
                   {/* Skills in this phase */}
                   {phase.skills && phase.skills.length > 0 && (
                     <div className="phase-skills">
-                      <h4>Goals for this Phase:</h4>
-                      <ul className="skills-list">
-                        {phase.skills.map((skill, skillIndex) => (
-                          <li key={skillIndex} className="skill-item">
-                            <span className="skill-name">{typeof skill === 'string' ? skill : skill.name}</span>
-                            {skill.difficulty && (
-                              <span className={`skill-difficulty ${skill.difficulty.toLowerCase()}`}>
-                                {skill.difficulty}
-                              </span>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
+                      <div className="goals-header" onClick={() => toggleGoalsCollapse(phase.id || index)}>
+                        <h4>Goals for this Phase:</h4>
+                        <button className="collapse-toggle">
+                          {collapsedGoals.has(phase.id || index) ? (
+                            <ChevronDown className="toggle-icon" />
+                          ) : (
+                            <ChevronUp className="toggle-icon" />
+                          )}
+                        </button>
+                      </div>
+                      {!collapsedGoals.has(phase.id || index) && (
+                        <div className="goals-content">
+                          {console.log('Phase skills data:', phase.skills)}
+                          <ul className="skills-list">
+                            {phase.skills.map((skill, skillIndex) => {
+                              const skillName = typeof skill === 'string' ? skill : skill?.name || '';
+                              console.log(`Skill ${skillIndex}:`, skill, 'Name:', skillName);
+                              
+                              // Only render if we have a valid skill name
+                              if (!skillName.trim()) {
+                                console.warn('Empty skill found at index', skillIndex, skill);
+                                return null;
+                              }
+                              
+                              return (
+                                <li key={skillIndex} className="skill-item">
+                                  <span className="skill-name">{skillName}</span>
+                                  {skill?.difficulty && (
+                                    <span className={`skill-difficulty ${skill.difficulty.toLowerCase()}`}>
+                                      {skill.difficulty}
+                                    </span>
+                                  )}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   )}
                   

@@ -273,6 +273,52 @@
   margin: 0 0 0.5rem 0;
 }
 
+/* Collapsible Goals Styles */
+.goals-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 0.5rem;
+}
+
+.goals-header:hover h4 {
+  color: #137fec;
+}
+
+.collapse-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.collapse-toggle:hover {
+  background: #f1f5f9;
+}
+
+.toggle-icon {
+  width: 1rem;
+  height: 1rem;
+  color: #64748b;
+  transition: color 0.2s;
+}
+
+.collapse-toggle:hover .toggle-icon {
+  color: #137fec;
+}
+
+.goals-content {
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
 .skills-list {
   list-style: none;
   padding: 0;
@@ -283,19 +329,25 @@
   display: block;
   margin-bottom: 0.75rem;
   padding: 1rem;
-  background: #ffffff;
+  background: #ffffff !important;
   border-radius: 0.5rem;
   border: 1px solid #e2e8f0;
   line-height: 1.6;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-height: 2.5rem;
+  position: relative;
 }
 
 .skill-name {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #374151;
+  color: #374151 !important;
   display: block;
   width: 100%;
+  text-align: left;
+  opacity: 1;
+  z-index: 1;
+  position: relative;
 }
 
 .skill-difficulty {
