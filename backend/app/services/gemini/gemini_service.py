@@ -45,15 +45,21 @@ class GeminiService:
             
         Returns:
             Tuple of (user_profile, recommended_skills)
+            
+        Raises:
+            ValueError: If the uploaded document is not a resume
         """
         prompt = self._create_resume_analysis_prompt(resume_text, target_skill)
         
         try:
             response = self._call_gemini_with_retry(prompt)
             return self._parse_resume_analysis_response(response, target_skill)
+        except ValueError as e:
+            # Re-raise the "not a resume" error to be handled by the calling endpoint
+            raise e
         except Exception as e:
             print(f"Gemini resume analysis failed: {e}")
-            # Fallback to mock data if Gemini fails
+            # Fallback to mock data if Gemini fails (but not for "not a resume" errors)
             return self._fallback_resume_analysis(target_skill)
     
     def generate_roadmap(self, selected_skills: List[str], preferences: Dict, user_profile: Dict) -> Dict:
@@ -81,14 +87,28 @@ class GeminiService:
     def _create_resume_analysis_prompt(self, resume_text: str, target_skill: str) -> str:
         """Create prompt for resume analysis"""
         return f"""
-You are an expert career counselor and skills assessor. Analyze the following resume and provide insights for someone wanting to become a {target_skill}.
+You are an expert career counselor and skills assessor. First, determine if the following text is actually a resume/CV. If it's not a resume, return an error response. If it is a resume, analyze it and provide insights for someone wanting to become a {target_skill}.
 
-RESUME TEXT:
+DOCUMENT TEXT:
 {resume_text}
 
 TARGET ROLE: {target_skill}
 
-Please analyze this resume and provide a JSON response with the following structure:
+INSTRUCTIONS:
+1. First, check if this text appears to be a resume/CV by looking for typical resume elements like:
+   - Personal/contact information
+   - Work experience section
+   - Education section
+   - Skills section
+   - Professional summary or objective
+
+2. If this is NOT a resume/CV, return this exact JSON structure:
+{{
+    "error": "not_a_resume",
+    "message": "The uploaded document does not appear to be a resume or CV. Please upload a valid resume document containing work experience, education, and skills information."
+}}
+
+3. If this IS a resume/CV, analyze it and provide a JSON response with the following structure:
 
 {{
     "user_profile": {{
@@ -112,7 +132,7 @@ Please analyze this resume and provide a JSON response with the following struct
     ]
 }}
 
-Guidelines:
+Guidelines for resume analysis:
 1. Extract actual name from resume (if not clear, use "Professional")
 2. Assess current level based on experience, projects, and education
 3. Extract 5-8 relevant technical skills with confidence scores
@@ -120,6 +140,7 @@ Guidelines:
 5. Score skills by relevance and impact for the target role
 6. Provide realistic duration estimates
 7. Ensure skill_ids are sequential (sk_01, sk_02, etc.)
+7. IF THE resume_text DON'T RESEMBLE A RESUME, STO
 
 Respond ONLY with valid JSON, no additional text.
 """
@@ -217,6 +238,11 @@ Guidelines:
                 cleaned_response = cleaned_response[3:-3]
             
             data = json.loads(cleaned_response)
+            
+            # Check if the response indicates the document is not a resume
+            if data.get('error') == 'not_a_resume':
+                raise ValueError(data.get('message', 'The uploaded document does not appear to be a resume or CV.'))
+            
             user_profile = data.get('user_profile', {})
             recommended_skills = data.get('recommended_skills', [])
             
@@ -225,6 +251,9 @@ Guidelines:
         except json.JSONDecodeError as e:
             print(f"Failed to parse Gemini resume analysis response: {e}")
             return self._fallback_resume_analysis(target_skill)
+        except ValueError as e:
+            # Re-raise the "not a resume" error to be handled by the calling function
+            raise e
     
     def _parse_roadmap_response(self, response: str, preferences: Dict, user_profile: Dict) -> Dict:
         """Parse Gemini response for roadmap generation"""
