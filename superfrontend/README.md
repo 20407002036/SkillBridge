@@ -1,14 +1,83 @@
-# Getting Started with Create React App
+# SkillBridge Frontend (React CRA)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is the **Create React App** based frontend for SkillBridge - an AI-powered career development platform that analyzes resumes, identifies skill gaps, and generates personalized learning roadmaps.
 
-## Available Scripts
+## 🚀 Features
+
+- **Modern React UI**: Built with React 19 and modern hooks
+- **Responsive Design**: TailwindCSS for mobile-first responsive design  
+- **Interactive Components**: Landing page, resume upload, skill recommendations, roadmaps
+- **Real-time Updates**: Polling-based status updates for async operations
+- **Professional Dashboard**: Visualize skills, progress, and learning paths
+- **PDF Downloads**: Download generated roadmaps as professional PDFs
+
+## 📁 Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+├── pages/              # Main application pages
+│   ├── LandingPage.jsx    # Home page with features overview
+│   ├── UploadResume.jsx   # Resume upload interface
+│   ├── RecommendedSkills.jsx # AI skill recommendations
+│   ├── Roadmap.jsx        # Learning roadmap display
+│   ├── Dashboard.jsx      # User progress dashboard
+│   └── Profile.jsx        # User profile management
+├── hooks/              # Custom React hooks
+├── styles/             # CSS and styling files
+├── axiosConfig.js      # API configuration
+└── App.js             # Main application component
+```
+
+## 🛠️ Tech Stack
+
+- **React**: 19.2.0 with modern hooks and functional components
+- **React Router**: 6.30.1 for client-side routing
+- **Axios**: 1.4.0 for API communication
+- **Lucide React**: 0.545.0 for modern icons
+- **TailwindCSS**: For utility-first styling
+- **React Testing Library**: For component testing
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 16+ 
+- npm or yarn
+- Running SkillBridge backend (see main README)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/20407002036/SkillBridge.git
+   cd SkillBridge/superfrontend
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment**
+   ```bash
+   # Create .env file
+   echo "REACT_APP_API_URL=http://localhost:5000/api/v1" > .env
+   ```
+
+4. **Start development server**
+   ```bash
+   npm start
+   ```
+
+   Opens [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 📝 Available Scripts
 
 In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.\
+Runs the app in development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
@@ -16,7 +85,7 @@ You may also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
+Launches the test runner in interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
@@ -27,44 +96,70 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### `npm run lint`
 
-### `npm run eject`
+Runs ESLint to check for code quality and style issues.\
+Automatically fixes many issues with the `--fix` flag.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🔗 API Integration
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+This frontend communicates with the SkillBridge Flask backend through RESTful API calls:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **Base URL**: `http://localhost:5000/api/v1` (development)
+- **Authentication**: JWT Bearer tokens (planned)
+- **Error Handling**: Comprehensive error boundaries and user feedback
+- **Loading States**: Real-time status updates for async operations
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🎨 UI Components
 
-## Learn More
+### Key Pages
+- **LandingPage**: Hero section, features overview, call-to-action
+- **UploadResume**: Drag-drop file upload with progress indicators  
+- **RecommendedSkills**: AI-generated skill recommendations with selection
+- **Roadmap**: Interactive learning roadmap with phases and milestones
+- **Dashboard**: Progress tracking and analytics visualization
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Design System
+- **Colors**: Professional blue/gray palette
+- **Typography**: Clean, readable font hierarchy
+- **Spacing**: Consistent 8px grid system
+- **Components**: Reusable buttons, cards, forms, and modals
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🧪 Testing
 
-### Code Splitting
+Run the test suite:
+```bash
+npm test
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Coverage report:
+```bash
+npm test -- --coverage
+```
 
-### Analyzing the Bundle Size
+## 🚀 Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Build for Production
+```bash
+npm run build
+```
 
-### Making a Progressive Web App
+### Deploy Options
+- **Vercel**: `vercel deploy`
+- **Netlify**: Connect Git repository
+- **AWS S3**: Upload `build/` folder
+- **Docker**: Use included Dockerfile (planned)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 🔧 Development Tips
 
-### Advanced Configuration
+- **Hot Reload**: Changes automatically reflect in browser
+- **DevTools**: React and Redux DevTools supported
+- **Debugging**: Source maps enabled for easy debugging
+- **Code Splitting**: Automatic code splitting for optimal performance
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 📚 Learn More
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [React Documentation](https://reactjs.org/)
+- [Create React App Documentation](https://facebook.github.io/create-react-app/docs/getting-started)
+- [TailwindCSS Documentation](https://tailwindcss.com/docs)
+- [SkillBridge API Documentation](../docs/api_endpoints.md)
