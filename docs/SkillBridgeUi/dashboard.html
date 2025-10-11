@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link as="style" href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700;900" onload="this.rel='stylesheet'" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#101922",
+            },
+            fontFamily: {
+              "display": ["Manrope"]
+            },
+            borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+          },
+        },
+      }
+    </script>
+<title>SkillBridge Dashboard</title>
+<link href="data:image/x-icon;base64," rel="icon" type="image/x-icon"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200">
+<div class="flex min-h-screen w-full flex-col">
+<header class="sticky top-0 z-10 flex items-center justify-between whitespace-nowrap border-b border-gray-200/80 dark:border-gray-700/80 bg-background-light/80 dark:bg-background-dark/80 px-10 py-3 backdrop-blur-sm">
+<div class="flex items-center gap-3">
+<div class="text-primary h-8 w-8">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z" fill="currentColor"></path>
+</svg>
+</div>
+<h1 class="text-xl font-bold text-gray-900 dark:text-white">SkillBridge</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600 dark:text-gray-300">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<a class="text-primary font-semibold" href="#">Roadmaps</a>
+<a class="hover:text-primary transition-colors" href="#">Skills</a>
+<a class="hover:text-primary transition-colors" href="#">Community</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200/50 dark:bg-gray-700/50 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-10 w-10 aspect-square rounded-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB1tH_xg1BndWU22tIec4gPHpHwAwGKx0FqlChV5NoQApPxXEupi4ORaxmNBMd-Cx2zs3R6boRtic_A66Jfi_2KtGLk14Zu7gbF2kPhhVXeLyNrskXhEiOb3prf_wGyiy_ZFnelLo6luGMckHH0zIaGf94I2dMo_RFewNACJeuHUqBiRbuUm5kXtIUH5eOTPZRHoPv7OPmbGZPVxoVJ0IqbtvSrZTV_Zfasd72bnxnGToFqLqgifF5IQj6l1urnxa3PkAcjx5OFNPc");'></div>
+</div>
+</div>
+</header>
+<main class="flex-1 px-4 py-8 sm:px-6 md:px-10 lg:px-20 xl:px-40">
+<div class="mx-auto max-w-5xl">
+<div class="mb-8">
+<h2 class="text-4xl font-bold text-gray-900 dark:text-white">My Roadmap</h2>
+<p class="text-lg text-gray-500 dark:text-gray-400">Data Science</p>
+</div>
+<div class="mb-10 rounded-xl bg-white dark:bg-gray-800/50 p-6 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<p class="font-semibold text-gray-800 dark:text-gray-200">Overall Progress</p>
+<p class="font-bold text-lg text-primary">60%</p>
+</div>
+<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mb-2">
+<div class="bg-primary h-2.5 rounded-full" style="width: 60%"></div>
+</div>
+<p class="text-sm text-gray-500 dark:text-gray-400">6 of 10 skills completed</p>
+</div>
+<div class="mb-10">
+<h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Completed Skills</h3>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+<div class="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 p-4">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">check</span>
+</div>
+<h4 class="font-semibold text-gray-800 dark:text-gray-200">Data Analysis</h4>
+</div>
+<div class="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 p-4">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">check</span>
+</div>
+<h4 class="font-semibold text-gray-800 dark:text-gray-200">Machine Learning</h4>
+</div>
+<div class="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 p-4">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">check</span>
+</div>
+<h4 class="font-semibold text-gray-800 dark:text-gray-200">Python</h4>
+</div>
+<div class="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 p-4">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">check</span>
+</div>
+<h4 class="font-semibold text-gray-800 dark:text-gray-200">SQL</h4>
+</div>
+<div class="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 p-4">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">check</span>
+</div>
+<h4 class="font-semibold text-gray-800 dark:text-gray-200">Data Visualization</h4>
+</div>
+<div class="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 p-4">
+<div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">check</span>
+</div>
+<h4 class="font-semibold text-gray-800 dark:text-gray-200">Statistics</h4>
+</div>
+</div>
+</div>
+<div class="space-y-8">
+<div>
+<h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Current Stage</h3>
+<div class="flex flex-col md:flex-row items-stretch gap-6 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 p-6 overflow-hidden">
+<div class="flex-1">
+<h4 class="text-lg font-bold text-gray-900 dark:text-white">Advanced Machine Learning</h4>
+<p class="text-gray-500 dark:text-gray-400 mb-4">Dive deeper into machine learning algorithms and techniques.</p>
+<button class="flex items-center justify-center rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold shadow-sm hover:bg-primary/90 transition-all">Continue</button>
+</div>
+<div class="md:w-1/3 h-48 md:h-auto rounded-lg bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCppMbwPmYa3MlZ5nvEO2FM2eJu_l3GJj8xq8laiprUy6P8fnsM_7iUnwSCZYt3yj56wN0hXymwN8mflkVQ078mAStXBSwbOFlREJSXyotn8JPMfE4Gt1oY4Y6KOrYkuQfhigeEDBhAaXTJN_D7UqbpMxQpmYKxJWw0_1mUBanLDr4U6_iohiyT2X2ue_xANwHJtQ6wvd62g2eo1IPigVsdn6f3XKbRg0mSrNYt44Oo86Y_w3F6b-iBGA1Yfw8BxjxgHCxlUpr89Ls");'></div>
+</div>
+</div>
+<div>
+<h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Upcoming Stages</h3>
+<div class="space-y-4">
+<div class="flex flex-col md:flex-row items-center gap-6 rounded-lg p-4 border border-transparent hover:bg-white dark:hover:bg-gray-800/50 hover:border-gray-200 dark:hover:border-gray-700 transition-all">
+<div class="md:w-1/3 h-32 md:h-24 w-full rounded-lg bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuARDXmlduTPI3s7Zgem_hs0ppCOoNNwA6BIxQlDg6HyWIzfzKDt5wq_6wYpxLk5NWEQQ0N86IDdqZqMG_XUO5mpOw13l3D75giaQdu9qLIZZwc7tB2B2x36fcnxIjTXYrdvxhSHEK1pR85OawpB11B4iBkfA6ksmyUttwIMLjDfJ6FDwxEkm1B-Z-WnaxXQLWfYAxR0ncWUBvOm7B6sU8W9rmLKj-KSNtCJtYuKtPxSpwDx7GYSqVyGQBerm2yuj8trnw_IuvVnZNI");'></div>
+<div class="flex-1">
+<h4 class="font-bold text-gray-800 dark:text-gray-200">Deep Learning</h4>
+<p class="text-sm text-gray-500 dark:text-gray-400">Explore neural networks and deep learning frameworks.</p>
+</div>
+</div>
+<div class="flex flex-col md:flex-row items-center gap-6 rounded-lg p-4 border border-transparent hover:bg-white dark:hover:bg-gray-800/50 hover:border-gray-200 dark:hover:border-gray-700 transition-all">
+<div class="md:w-1/3 h-32 md:h-24 w-full rounded-lg bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDPiPSsR6Ob0GxCM8xGQzA-Z9WvRj-0UIkwCDcQZTSsXfZQyVJD5NlFsm7UOFugzj3Y4C79lZUhCM1btmSX4JrELHUZxIvjf9MVLXipR4pCiduWEjS5ZupGYX6WRMZGse_oni2M5fSMA4AR5Xzj3_4TEH5rkW8-8IFr9ZltHoxDsIZ6dDYXbIAuQZKPj86oe_HW_bzt5KbcW1-xpMyGKA0Kj5V5ZXRdIRk8azgexklbn3XpcKRLkO9RtlaixABx3R5P9rNQZnHU2eA");'></div>
+<div class="flex-1">
+<h4 class="font-bold text-gray-800 dark:text-gray-200">Big Data Technologies</h4>
+<p class="text-sm text-gray-500 dark:text-gray-400">Learn tools and techniques for handling large datasets.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-700 pt-8">
+<button class="w-full sm:w-auto flex items-center justify-center rounded-lg h-11 px-6 bg-gray-200/80 dark:bg-gray-700/80 text-gray-800 dark:text-gray-200 text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-700 transition-all">
+                Edit Roadmap
+              </button>
+<button class="w-full sm:w-auto flex items-center justify-center rounded-lg h-11 px-6 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/30 hover:bg-primary/90 transition-all">
+                Get Skill Recommendations
+              </button>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

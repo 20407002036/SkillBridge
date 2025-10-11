@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "../axiosConfig";
 import { Link, useNavigate } from "react-router-dom";
 import { Home, User, Target, LayoutDashboard } from "lucide-react";
-import "../styles/Skills.css";
+import "../styles/UserSkills.css";
 
-const Skills = () => {
+const UserSkills = () => {
   const [technicalSkills, setTechnicalSkills] = useState([]);
   const [softSkills, setSoftSkills] = useState([]);
   const [newSkill, setNewSkill] = useState("");
@@ -76,7 +76,7 @@ const Skills = () => {
           <Link to="/" className="nav-item"><Home size={18} /><span>Home</span></Link>
           <Link to="/dashboard" className="nav-item"><LayoutDashboard size={18} /><span>Dashboard</span></Link>
           <Link to="/roadmap" className="nav-item"><Target size={18} /><span>Roadmap</span></Link>
-          <Link to="/skills" className="nav-item active"><User size={18} /><span>Skills</span></Link>
+          <Link to="/user-skills" className="nav-item active"><User size={18} /><span>Skills</span></Link>
         </nav>
 
         <div className="profile-icon" onClick={() => navigate("/profile")}>
@@ -142,4 +142,4 @@ const Skills = () => {
   );
 };
 
-export default Skills;
+export default UserSkills;

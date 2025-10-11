@@ -132,6 +132,10 @@ dist
 
 # Gatsby files
 .cache/
+<<<<<<< Updated upstream
+=======
+# public
+>>>>>>> Stashed changes
 
 # Storybook build outputs
 .out

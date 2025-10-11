@@ -69,6 +69,23 @@
   margin-bottom: 30px;
 }
 
+/* ---------- PENDING ANALYSIS NOTICE ---------- */
+.pending-analysis-notice {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border: 1px solid #0ea5e9;
+  border-radius: 10px;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.pending-analysis-notice p {
+  margin: 0;
+  color: #0369a1;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 /* ---------- FORM ---------- */
 .auth-card form {
   display: flex;
