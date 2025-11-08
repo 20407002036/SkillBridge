@@ -88,7 +88,7 @@ def login():
         return jsonify({"error": str(e)}), 401
 
 @auth_bp.route('/verifyOTP', methods=['POST'])
-def vefify_OTP():
+def verify_OTP():
     data = request.get_json()
     email = data.get('email')
     verification_OTP = data.get('otp')
