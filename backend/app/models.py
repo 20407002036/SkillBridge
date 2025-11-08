@@ -13,7 +13,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     # password_hash = db.Column(db.String(128))
-    supabase_user_id=db.Column(db.String(128))
+    supabase_user_id = db.Column(db.String(128), nullable=False, unique=True)
     name = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     # Link to analysis_id if user created account after generating a roadmap

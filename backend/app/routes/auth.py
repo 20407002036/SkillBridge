@@ -21,6 +21,10 @@ def register():
     if not username or not email or not password:
         return jsonify({'error': 'Missing required fields'}), 400
 
+    # Check for duplicate username or email in local database before Supabase registration
+    existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
+    if existing_user:
+        return jsonify({'error': 'Username or email already exists'}), 400
     try:
         # print(f"Registration attempt - analysis_id: {analysis_id}")
         user = supabase.auth.sign_up({"email": email, "password": password})
@@ -61,7 +65,7 @@ def register():
 
         return jsonify(response_data), 201
     except Exception as e:
-        print(f"Error id {str(e)}")
+        print(f"Error in {str(e)}")
         return jsonify({"error": str(e)}), 400
 
 @auth_bp.route('/login', methods=['POST'])
@@ -83,6 +87,8 @@ def login():
         from app.models import User
         user = User.query.filter_by(supabase_user_id=session['user_id']).first()
 
+        if user is None:
+            return jsonify({"error": "User not found"}), 404
         return jsonify({"message": "Logged in successfully", "user_id": user.id}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 401
@@ -94,7 +100,7 @@ def verify_OTP():
     verification_OTP = data.get('otp')
 
     if not email or not verification_OTP:
-        return jsonify({'error': 'Missing verification One time password'})
+        return jsonify({'error': 'Missing verification One time password'}), 400
 
     supabase = SupabaseAuth().create_client(os.environ.get("SUPABASE_KEY"), os.environ.get("SUPABASE_URL"))
 
@@ -105,8 +111,10 @@ def verify_OTP():
 
         from app.models import User
         user = User.query.filter_by(supabase_user_id=session['user_id']).first()
+        if user is None:
+            return jsonify({'error': 'User not found'}), 404
 
-        return jsonify({'message': "User account verified successfully ", "user": { "email": user.email, "user_id": user.id}, "token": session['access_token']})
+        return jsonify({'message': "User account verified successfully ", "user": { "id": user.id, "username": user.username, "email": user.email}, "token": session['access_token']})
     except Exception as e:
         return jsonify({"error": str(e)}),401
 
