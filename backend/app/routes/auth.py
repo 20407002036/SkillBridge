@@ -89,7 +89,15 @@ def login():
 
         if user is None:
             return jsonify({"error": "User not found"}), 404
-        return jsonify({"message": "Logged in successfully", "user_id": user.id}), 200
+        return jsonify({
+            "message": "Logged in successfully",
+            "token": session['access_token'],
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email
+            }
+        }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 401
 
