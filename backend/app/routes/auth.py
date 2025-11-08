@@ -82,7 +82,7 @@ def register():
             except Exception as cleanup_error:
                 print(f"Failed to cleanup Supabase user after database failure: {cleanup_error}")
             
-            return jsonify({'error': f'Failed to register user: {str(commit_error)}'}), 500
+            return jsonify({'error': 'Failed to register user due to database error'}), 500
 
         response_data = {'message': 'User registered successfully'}
         if analysis_id:
