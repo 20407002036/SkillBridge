@@ -5,8 +5,6 @@ import os
 import json
 import uuid
 from datetime import datetime
-
-# Import celery instance from the correct module
 from app.celery_app import celery
 
 @celery.task(bind=True, name='app.tasks.process_resume_analysis')
@@ -15,7 +13,6 @@ def process_resume_analysis(self, analysis_id: str):
     Celery task to process resume analysis
     This runs asynchronously after file upload
     """
-    # Import Flask app and models inside task to avoid circular imports
     from app import create_app
     from app.models import db, Analysis, UserProfile, RecommendedSkill
     from app.services.ai_service import AIService, extract_text_from_pdf, extract_text_from_docx
@@ -24,12 +21,10 @@ def process_resume_analysis(self, analysis_id: str):
     
     with app.app_context():
         try:
-            # Get analysis record
             analysis = Analysis.query.get(analysis_id)
             if not analysis:
                 return {"error": "Analysis not found"}
             
-            # Extract text from resume file
             file_extension = os.path.splitext(analysis.resume_filename)[1].lower()
             
             if file_extension == '.pdf':
@@ -41,7 +36,6 @@ def process_resume_analysis(self, analysis_id: str):
                 db.session.commit()
                 return {"error": "Unsupported file format"}
             
-            # Use AI service to analyze resume (placeholder for your LLM)
             user_profile_data, recommended_skills_data = AIService.analyze_resume(
                 resume_text, analysis.target_skill
             )

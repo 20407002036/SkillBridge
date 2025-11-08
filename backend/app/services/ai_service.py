@@ -48,7 +48,6 @@ class AIService:
         # Create service instance to access LLM providers
         service = AIService()
         
-        # Try Gemini first
         if service.gemini_service:
             try:
                 return service.gemini_service.analyze_resume(resume_text, target_skill)

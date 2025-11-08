@@ -79,7 +79,7 @@ class GeminiService:
             return self._fallback_roadmap_generation(selected_skills, preferences, user_profile)
     
     def _create_resume_analysis_prompt(self, resume_text: str, target_skill: str) -> str:
-        """Create prompt for resume analysis"""
+        """Returns prompt for resume analysis"""
         return f"""
 You are an expert career counselor and skills assessor. Analyze the following resume and provide insights for someone wanting to become a {target_skill}.
 
