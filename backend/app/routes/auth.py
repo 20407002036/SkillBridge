@@ -27,7 +27,7 @@ def register():
         return jsonify({'error': 'Username or email already exists'}), 400
     try:
         # print(f"Registration attempt - analysis_id: {analysis_id}")
-        user = supabase.auth.sign_up({"email": email, "password": password})
+        supabase_response = supabase.auth.sign_up({"email": email, "password": password})
 
         # Validate analysis_id if provided
         linked_analysis = None
@@ -46,7 +46,7 @@ def register():
         user = User(
             username=username,
             email=email,
-            supabase_user_id=user.user.id,
+            supabase_user_id=supabase_response.user.id,
             linked_analysis_id=analysis_id if linked_analysis else None
         )
         db.session.add(user)
@@ -56,7 +56,17 @@ def register():
             linked_analysis.user_id = user.id
             print(f"Updated analysis {linked_analysis.id} with user_id: {user.id}")
     
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as commit_error:
+            # Rollback database changes
+            db.session.rollback()
+            # Attempt to clean up the Supabase user that was created
+            try:
+                supabase.auth.admin.delete_user(supabase_response.user.id)
+            except Exception as cleanup_error:
+                print(f"Failed to cleanup Supabase user after DB commit failure: {str(cleanup_error)}")
+            raise commit_error
 
         response_data = {'message': 'User registered successfully'}
         if analysis_id:
