@@ -29,7 +29,9 @@ def register():
     supabase_user = None
     try:
         # print(f"Registration attempt - analysis_id: {analysis_id}")
+        # Create Supabase user first
         supabase_user = supabase.auth.sign_up({"email": email, "password": password})
+        supabase_user_id = supabase_user.user.id
 
         # Validate analysis_id if provided
         linked_analysis = None
@@ -40,25 +42,25 @@ def register():
                 print(f"Analysis {analysis_id} not found in database")
                 # Clean up Supabase user before returning error
                 try:
-                    supabase.auth.admin.delete_user(supabase_user.user.id)
+                    supabase.auth.admin.delete_user(supabase_user_id)
                 except Exception as cleanup_error:
-                    print(f"Failed to cleanup Supabase user: {cleanup_error}")
+                    print(f"Warning: Failed to clean up Supabase user: {cleanup_error}")
                 return jsonify({'error': 'Invalid analysis_id provided'}), 400
             print(f"Found analysis: {linked_analysis.id}, status: {linked_analysis.status}")
             if linked_analysis.status != 'completed':
                 print(f"Analysis {analysis_id} not completed yet")
                 # Clean up Supabase user before returning error
                 try:
-                    supabase.auth.admin.delete_user(supabase_user.user.id)
+                    supabase.auth.admin.delete_user(supabase_user_id)
                 except Exception as cleanup_error:
-                    print(f"Failed to cleanup Supabase user: {cleanup_error}")
+                    print(f"Warning: Failed to clean up Supabase user: {cleanup_error}")
                 return jsonify({'error': 'Analysis must be completed before linking to account'}), 400
 
-        # hashed_password = generate_password_hash(password)
+        # Create local database user
         user = User(
             username=username,
             email=email,
-            supabase_user_id=supabase_user.user.id,
+            supabase_user_id=supabase_user_id,
             linked_analysis_id=analysis_id if linked_analysis else None
         )
         db.session.add(user)
@@ -68,21 +70,22 @@ def register():
             linked_analysis.user_id = user.id
             print(f"Updated analysis {linked_analysis.id} with user_id: {user.id}")
     
+        # Attempt to commit database changes
         try:
             db.session.commit()
-        except Exception as commit_error:
+        except Exception as db_error:
             # Rollback database changes
             db.session.rollback()
-            print(f"Database commit failed: {commit_error}")
+            print(f"Database commit failed: {db_error}")
             
-            # Attempt to cleanup the Supabase user
+            # Clean up Supabase user since database operation failed
             try:
-                supabase.auth.admin.delete_user(supabase_user.user.id)
+                supabase.auth.admin.delete_user(supabase_user_id)
                 print(f"Successfully cleaned up Supabase user after database failure")
             except Exception as cleanup_error:
-                print(f"Failed to cleanup Supabase user after database failure: {cleanup_error}")
+                print(f"Warning: Failed to clean up Supabase user after database failure: {cleanup_error}")
             
-            return jsonify({'error': 'Failed to register user due to database error'}), 500
+            raise db_error
 
         response_data = {'message': 'User registered successfully'}
         if analysis_id:
@@ -91,18 +94,9 @@ def register():
 
         return jsonify(response_data), 201
     except Exception as e:
-        # Rollback any pending database changes
+        # Ensure database rollback on any error
         db.session.rollback()
-        
-        # If a Supabase user was created, attempt to clean it up
-        if supabase_user:
-            try:
-                supabase.auth.admin.delete_user(supabase_user.user.id)
-                print(f"Successfully cleaned up Supabase user after error")
-            except Exception as cleanup_error:
-                print(f"Failed to cleanup Supabase user: {cleanup_error}")
-        
-        print(f"Error in {str(e)}")
+        print(f"Error in registration: {str(e)}")
         return jsonify({"error": str(e)}), 400
 
 @auth_bp.route('/login', methods=['POST'])
