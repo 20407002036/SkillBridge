@@ -124,3 +124,132 @@
   background-color: #1e40af;
   box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
 }
+
+.auth-card button[type="submit"]:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ---------- MESSAGE ---------- */
+.auth-message {
+  text-align: center;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 500;
+  background-color: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #0ea5e9;
+}
+
+/* ---------- OTP POPUP ---------- */
+.otp-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.otp-popup {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  animation: popupSlideIn 0.3s ease;
+}
+
+@keyframes popupSlideIn {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.otp-popup h3 {
+  margin-bottom: 1rem;
+  color: #1e293b;
+  font-size: 1.5rem;
+}
+
+.otp-popup p {
+  margin-bottom: 1.5rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.otp-popup input {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #d4d7e5;
+  border-radius: 10px;
+  font-size: 20px;
+  text-align: center;
+  letter-spacing: 3px;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.otp-popup input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.otp-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.otp-buttons button {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.otp-buttons button[type="submit"] {
+  background-color: #2563eb;
+  color: white;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.25);
+}
+
+.otp-buttons button[type="submit"]:hover:not(:disabled) {
+  background-color: #1e40af;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+}
+
+.otp-buttons .cancel-btn {
+  background-color: #6b7280;
+  color: white;
+  box-shadow: 0 4px 15px rgba(107, 114, 128, 0.25);
+}
+
+.otp-buttons .cancel-btn:hover {
+  background-color: #4b5563;
+  box-shadow: 0 6px 18px rgba(107, 114, 128, 0.35);
+}
+
+.otp-buttons button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}

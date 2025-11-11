@@ -10,6 +10,10 @@ export default function AuthPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [hasPendingAnalysis, setHasPendingAnalysis] = useState(false);
+  const [showOtpPopup, setShowOtpPopup] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [registrationEmail, setRegistrationEmail] = useState("");
   const navigate = useNavigate();
 
   // Auto-redirect if user already authenticated
@@ -26,6 +30,69 @@ export default function AuthPage() {
                              sessionStorage.getItem("analysis_id");
     setHasPendingAnalysis(!!pendingAnalysisId);
   }, [navigate]);
+
+  const handleOtpVerification = async (e) => {
+    e.preventDefault();
+    setVerifyingOtp(true);
+    setMessage("");
+
+    try {
+      const res = await axios.post("/api/auth/verifyOTP", {
+        email: registrationEmail,
+        otp: otp
+      }, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+
+      console.log("OTP verification response:", res.data);
+      
+      // Expected response from backend:
+      // {
+      //   "message": "Email verified successfully",
+      //   "token": "jwt_access_token",
+      //   "user": {
+      //     "id": "user_id",
+      //     "username": "username", 
+      //     "email": "user@email.com",
+      //     "verified": true
+      //   }
+      // }
+
+      // Update stored user data with verified token and user info
+      if (res.data.token && res.data.user) {
+        const userObj = {
+          id: res.data.user.id,
+          username: res.data.user.username,
+          email: res.data.user.email,
+          verified: true
+        };
+
+        // Store verified user data and token
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", JSON.stringify(userObj));
+        localStorage.setItem("username", userObj.username);
+        localStorage.setItem("email", userObj.email);
+        localStorage.setItem("userId", userObj.id);
+      }
+      
+      setMessage("Email verified successfully! Redirecting to dashboard...");
+      setShowOtpPopup(false);
+      
+      // Redirect to dashboard after successful verification
+      setTimeout(() => navigate("/dashboard"), 1200);
+
+    } catch (err) {
+      console.error("OTP verification error:", err.response?.data || err.message);
+      if (err.response?.status === 400) {
+        setMessage("Invalid or expired OTP. Please try again.");
+      } else {
+        setMessage("OTP verification failed. Please try again.");
+      }
+    } finally {
+      setVerifyingOtp(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,41 +134,25 @@ export default function AuthPage() {
 
       const userData = res.data.user || res.data;
 
-      // Store persistent user info in localStorage
-      const userObj = {
-        id: userData.id || "",
-        username: userData.username || userData.name || "",
-        email: userData.email || form.email,
-      };
-
-      localStorage.setItem("token", res.data.token || "");
-      localStorage.setItem("user", JSON.stringify(userObj));
-      localStorage.setItem("username", userObj.username);
-      localStorage.setItem("email", userObj.email);
-      localStorage.setItem("userId", userObj.id);
-
-      // Handle success messages
-      let successMessage = "";
       if (isLogin) {
-        successMessage = `Welcome back, ${userObj.username || "User"}!`;
-      } else {
-        // Registration success message
-        if (res.data.linked_analysis_id) {
-          successMessage = "Registration successful! Your previous roadmap has been linked to your account.";
-          // Clear the pending analysis_id since it's now linked
-          localStorage.removeItem("current_analysis_id");
-          sessionStorage.removeItem("analysis_id");
-        } else {
-          successMessage = "Registration successful! Redirecting to your dashboard...";
-        }
-      }
+        // Handle login flow
+        const userObj = {
+          id: userData.id || "",
+          username: userData.username || userData.name || "",
+          email: userData.email || form.email,
+        };
 
-      setMessage(successMessage);
+        localStorage.setItem("token", res.data.token || "");
+        localStorage.setItem("user", JSON.stringify(userObj));
+        localStorage.setItem("username", userObj.username);
+        localStorage.setItem("email", userObj.email);
+        localStorage.setItem("userId", userObj.id);
 
-      // For login, check if user has linked analysis and redirect accordingly
-      if (isLogin) {
+        let successMessage = `Welcome back, ${userObj.username || "User"}!`;
+        setMessage(successMessage);
+
+        // Check for linked analysis
         try {
-          // Check for linked analysis
           const linkedAnalysisRes = await axios.get("/api/auth/user/linked-analysis", {
             headers: { "Authorization": `Bearer ${res.data.token}` }
           });
@@ -110,13 +161,27 @@ export default function AuthPage() {
             setMessage(`Welcome back, ${userObj.username}! Your previous roadmaps are ready.`);
           }
         } catch (error) {
-          // If linked analysis check fails, continue with normal flow
           console.log("No linked analysis found or error:", error.response?.data);
         }
-      }
 
-      // Redirect after success - always go to dashboard
-      setTimeout(() => navigate("/dashboard"), 1200);
+        // Redirect after login
+        setTimeout(() => navigate("/dashboard"), 1200);
+
+      } else {
+        // Handle registration flow - show OTP popup
+        setRegistrationEmail(form.email);
+        setShowOtpPopup(true);
+        setMessage("Registration successful! Please check your email for the verification code.");
+
+        // DON'T store token/user data yet - wait for OTP verification
+        // The actual token and verified user data will be stored after OTP verification
+
+        // Clear pending analysis if it was linked
+        if (res.data.linked_analysis_id) {
+          localStorage.removeItem("current_analysis_id");
+          sessionStorage.removeItem("analysis_id");
+        }
+      }
 
     } catch (err) {
       console.error("Auth error:", err.response?.data || err.message);
@@ -195,6 +260,39 @@ export default function AuthPage() {
 
         {message && <p className="auth-message">{message}</p>}
       </div>
+
+      {/* OTP Verification Popup */}
+      {showOtpPopup && (
+        <div className="otp-popup-overlay">
+          <div className="otp-popup">
+            <h3>Verify Your Email</h3>
+            <p>We've sent a verification code to <strong>{registrationEmail}</strong></p>
+            <form onSubmit={handleOtpVerification}>
+              <input
+                type="text"
+                placeholder="Enter 6-digit code"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                maxLength="10"
+                required
+                autoFocus
+              />
+              <div className="otp-buttons">
+                <button type="submit" disabled={verifyingOtp}>
+                  {verifyingOtp ? "Verifying..." : "Verify"}
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setShowOtpPopup(false)}
+                  className="cancel-btn"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

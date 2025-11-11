@@ -1,9 +1,11 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import db, User, Analysis
 import jwt
 import datetime
 from flask import current_app
+import os
+from app.services.supabaseAuth import SupabaseAuth
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -15,51 +17,87 @@ def register():
     password = data.get('password')
     analysis_id = data.get('analysis_id')  # Optional analysis_id from roadmap generation
 
+    supabase = SupabaseAuth().create_client(os.environ.get("SUPABASE_KEY"), os.environ.get("SUPABASE_URL"))
     if not username or not email or not password:
         return jsonify({'error': 'Missing required fields'}), 400
 
-    if User.query.filter((User.username == username) | (User.email == email)).first():
-        return jsonify({'error': 'User already exists'}), 409
-
-    print(f"Registration attempt - analysis_id: {analysis_id}")
-
-    # Validate analysis_id if provided
-    linked_analysis = None
-    if analysis_id:
-        print(f"Looking for analysis with ID: {analysis_id}")
-        linked_analysis = Analysis.query.get(analysis_id)
-        if not linked_analysis:
-            print(f"Analysis {analysis_id} not found in database")
-            return jsonify({'error': 'Invalid analysis_id provided'}), 400
-        print(f"Found analysis: {linked_analysis.id}, status: {linked_analysis.status}")
-        if linked_analysis.status != 'completed':
-            print(f"Analysis {analysis_id} not completed yet")
-            return jsonify({'error': 'Analysis must be completed before linking to account'}), 400
-
-    hashed_password = generate_password_hash(password)
-    user = User(
-        username=username, 
-        email=email, 
-        password_hash=hashed_password,
-        linked_analysis_id=analysis_id if linked_analysis else None
-    )
-    print(f"Creating user with linked_analysis_id: {user.linked_analysis_id}")
-    db.session.add(user)
+    # Check for duplicate username or email in local database before Supabase registration
+    existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
+    if existing_user:
+        return jsonify({'error': 'Username or email already exists'}), 400
     
-    # If linking to an analysis, also update the analysis with the new user_id
-    if linked_analysis:
-        linked_analysis.user_id = user.id
-        print(f"Updated analysis {linked_analysis.id} with user_id: {user.id}")
+    supabase_user = None
+    try:
+        # print(f"Registration attempt - analysis_id: {analysis_id}")
+        # Create Supabase user first
+        supabase_user = supabase.auth.sign_up({"email": email, "password": password})
+        supabase_user_id = supabase_user.user.id
+
+        # Validate analysis_id if provided
+        linked_analysis = None
+        if analysis_id:
+            print(f"Looking for analysis with ID: {analysis_id}")
+            linked_analysis = Analysis.query.get(analysis_id)
+            if not linked_analysis:
+                print(f"Analysis {analysis_id} not found in database")
+                # Clean up Supabase user before returning error
+                try:
+                    supabase.auth.admin.delete_user(supabase_user_id)
+                except Exception as cleanup_error:
+                    print(f"Warning: Failed to clean up Supabase user: {cleanup_error}")
+                return jsonify({'error': 'Invalid analysis_id provided'}), 400
+            print(f"Found analysis: {linked_analysis.id}, status: {linked_analysis.status}")
+            if linked_analysis.status != 'completed':
+                print(f"Analysis {analysis_id} not completed yet")
+                # Clean up Supabase user before returning error
+                try:
+                    supabase.auth.admin.delete_user(supabase_user_id)
+                except Exception as cleanup_error:
+                    print(f"Warning: Failed to clean up Supabase user: {cleanup_error}")
+                return jsonify({'error': 'Analysis must be completed before linking to account'}), 400
+
+        # Create local database user
+        user = User(
+            username=username,
+            email=email,
+            supabase_user_id=supabase_user_id,
+            linked_analysis_id=analysis_id if linked_analysis else None
+        )
+        db.session.add(user)
     
-    db.session.commit()
-    print(f"User {user.id} created successfully")
+        # If linking to an analysis, also update the analysis with the new user_id
+        if linked_analysis:
+            linked_analysis.user_id = user.id
+            print(f"Updated analysis {linked_analysis.id} with user_id: {user.id}")
+    
+        # Attempt to commit database changes
+        try:
+            db.session.commit()
+        except Exception as db_error:
+            # Rollback database changes
+            db.session.rollback()
+            print(f"Database commit failed: {db_error}")
+            
+            # Clean up Supabase user since database operation failed
+            try:
+                supabase.auth.admin.delete_user(supabase_user_id)
+                print(f"Successfully cleaned up Supabase user after database failure")
+            except Exception as cleanup_error:
+                print(f"Warning: Failed to clean up Supabase user after database failure: {cleanup_error}")
+            
+            raise db_error
 
-    response_data = {'message': 'User registered successfully'}
-    if analysis_id:
-        response_data['linked_analysis_id'] = analysis_id
-        response_data['message'] = 'User registered successfully and linked to previous roadmap analysis'
+        response_data = {'message': 'User registered successfully'}
+        if analysis_id:
+            response_data['linked_analysis_id'] = analysis_id
+            response_data['message'] = 'User registered successfully and linked to previous roadmap analysis'
 
-    return jsonify(response_data), 201
+        return jsonify(response_data), 201
+    except Exception as e:
+        # Ensure database rollback on any error
+        db.session.rollback()
+        print(f"Error in registration: {str(e)}")
+        return jsonify({"error": str(e)}), 400
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
@@ -70,16 +108,54 @@ def login():
     if not email or not password:
         return jsonify({'error': 'Missing email or password'}), 400
 
-    user = User.query.filter_by(email=email).first()
-    if not user or not check_password_hash(user.password_hash, password):
-        return jsonify({'error': 'Invalid credentials'}), 401
+    supabase = SupabaseAuth().create_client(os.environ.get("SUPABASE_KEY"), os.environ.get("SUPABASE_URL"))
 
-    token = jwt.encode({
-        'user_id': user.id,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
-    }, current_app.config['SECRET_KEY'], algorithm='HS256')
+    try:
+        response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+        session['user_id'] = response.user.id
+        session['access_token'] = response.session.access_token
 
-    return jsonify({'token': token, 'user': {'id': user.id, 'username': user.username, 'email': user.email}}), 200
+        from app.models import User
+        user = User.query.filter_by(supabase_user_id=session['user_id']).first()
+
+        if user is None:
+            return jsonify({"error": "User not found"}), 404
+        return jsonify({
+            "message": "Logged in successfully",
+            "token": session['access_token'],
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 401
+
+@auth_bp.route('/verifyOTP', methods=['POST'])
+def verify_OTP():
+    data = request.get_json()
+    email = data.get('email')
+    verification_OTP = data.get('otp')
+
+    if not email or not verification_OTP:
+        return jsonify({'error': 'Missing verification One time password'}), 400
+
+    supabase = SupabaseAuth().create_client(os.environ.get("SUPABASE_KEY"), os.environ.get("SUPABASE_URL"))
+
+    try:
+        response = supabase.auth.verify_otp({'email': email, 'token': verification_OTP, 'type': 'email'})
+        session['user_id'] = response.user.id
+        session['access_token'] = response.session.access_token
+
+        from app.models import User
+        user = User.query.filter_by(supabase_user_id=session['user_id']).first()
+        if user is None:
+            return jsonify({'error': 'User not found'}), 404
+
+        return jsonify({'message': "User account verified successfully ", "user": { "id": user.id, "username": user.username, "email": user.email}, "token": session['access_token']})
+    except Exception as e:
+        return jsonify({"error": str(e)}),401
 
 @auth_bp.route('/user/linked-analysis', methods=['GET'])
 def get_user_linked_analysis():
@@ -264,3 +340,16 @@ def unlink_analysis_from_user():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+@auth_bp.route('/logout', methods=['POST'])
+def logout():
+    try:
+        supabase = SupabaseAuth().create_client(os.environ.get("SUPABASE_KEY"), os.environ.get("SUPABASE_URL"))
+
+        supabase.auth.sign_out()
+        session.pop('user_id', None)
+        session.pop('access_token', None)
+        return jsonify({"message": "Logged out successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

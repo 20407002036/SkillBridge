@@ -19,7 +19,6 @@ def upload_resume():
     Upload a resume and target skill for analysis
     """
     try:
-        # Check if the post request has the file part
         if 'resume' not in request.files:
             return jsonify({"error": "No resume file provided"}), 400
         
@@ -34,7 +33,6 @@ def upload_resume():
             return jsonify({"error": "No file selected"}), 400
         
         if file and allowed_file(file.filename):
-            # Generate unique analysis ID
             analysis_id = str(uuid.uuid4())
             
             # Secure the filename and create unique filename
@@ -42,10 +40,8 @@ def upload_resume():
             unique_filename = f"{analysis_id}_{filename}"
             file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_filename)
             
-            # Save the file
             file.save(file_path)
             
-            # Create analysis record
             analysis = Analysis(
                 id=analysis_id,
                 target_skill=target_skill,
