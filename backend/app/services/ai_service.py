@@ -1,7 +1,7 @@
 """
 AI Service - Main interface for AI operations
 This module provides interfaces for resume analysis and roadmap generation
-Integrates with multiple LLM providers (Gemini, etc.)
+Integrates with multiple LLM providers (Groq as primary, Gemini as fallback)
 """
 import json
 import os
@@ -9,32 +9,45 @@ from typing import Dict, List, Tuple
 
 from .Ollama.ollama_service import Ollama
 # Import LLM services
+from .groq import GroqService
 from .gemini import GeminiService
 from dotenv import load_dotenv
 
 class AIService:
     """
     Main AI service that can work with multiple LLM providers
-    Currently supports Gemini, easily extensible for other providers
+    Primary: Groq (openai/gpt-oss-20b)
+    Fallback: Gemini
     """
     
     def __init__(self):
         """Initialize AI service with available LLM providers"""
+        self.groq_service = None
         self.gemini_service = None
-        self.ollama_servie = None
+        self.ollama_service = None
 
         load_dotenv()
         
-        # Initialize Gemini if API key is available
+        # Initialize Groq as primary service
+        try:
+            if os.getenv('GROQ_API_KEY') or os.environ.get("GROQ_API_KEY"):
+                self.groq_service = GroqService()
+                print("✅ Groq service initialized (primary)")
+            else:
+                print("⚠️  GROQ_API_KEY not found, trying Gemini as fallback")
+        except Exception as e:
+            print(f"⚠️  Groq initialization failed: {e}, trying Gemini as fallback")
+
+        # Initialize Gemini as fallback service
         try:
             if os.getenv('GEMINI_API_KEY') or os.environ.get("GEMINI_API_KEY"):
                 self.gemini_service = GeminiService()
-                print("✅ Gemini service initialized")
+                print("✅ Gemini service initialized (fallback)")
             else:
-                print("⚠️  GEMINI_API_KEY not found, using fallback mode")
+                print("⚠️  GEMINI_API_KEY not found")
         except Exception as e:
-            print(f"⚠️  Gemini initialization failed: {e}, using fallback mode")
-    
+            print(f"⚠️  Gemini initialization failed: {e}")
+
     @staticmethod
     def analyze_resume(resume_text: str, target_skill: str) -> Tuple[Dict, List[Dict]]:
         """
@@ -50,18 +63,23 @@ class AIService:
         # Create service instance to access LLM providers
         service = AIService()
         
+        # Try Groq first (primary)
+        if service.groq_service:
+            try:
+                return service.groq_service.analyze_resume(resume_text, target_skill)
+            except Exception as e:
+                print(f"Groq analysis failed: {e}, falling back to Gemini")
+
+        # Fallback to Gemini
         if service.gemini_service:
             try:
                 return service.gemini_service.analyze_resume(resume_text, target_skill)
             except Exception as e:
                 print(f"Gemini analysis failed: {e}, falling back to mock data")
 
-        # Fallback to mock implementation
-        # return AIService._fallback_analyze_resume(resume_text, target_skill)
-        from .Ollama import ollama_service
-        ollama_servie = Ollama()
-        return ollama_servie.resume_analysis_fallback(resume_text, target_skill)
-    
+        # Final fallback to mock implementation
+        return AIService._fallback_analyze_resume(resume_text, target_skill)
+
     @staticmethod
     def generate_roadmap(selected_skills: List[str], preferences: Dict, user_profile: Dict) -> Dict:
         """
@@ -78,14 +96,21 @@ class AIService:
         # Create service instance to access LLM providers
         service = AIService()
         
-        # Try Gemini first
+        # Try Groq first (primary)
+        if service.groq_service:
+            try:
+                return service.groq_service.generate_roadmap(selected_skills, preferences, user_profile)
+            except Exception as e:
+                print(f"Groq roadmap generation failed: {e}, falling back to Gemini")
+
+        # Fallback to Gemini
         if service.gemini_service:
             try:
                 return service.gemini_service.generate_roadmap(selected_skills, preferences, user_profile)
             except Exception as e:
                 print(f"Gemini roadmap generation failed: {e}, falling back to mock data")
         
-        # Fallback to mock implementation
+        # Final fallback to mock implementation
         return AIService._fallback_generate_roadmap(selected_skills, preferences, user_profile)
     
     @staticmethod
