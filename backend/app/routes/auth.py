@@ -170,13 +170,28 @@ def get_user_linked_analysis():
             return jsonify({'error': 'Authorization token required'}), 401
         
         token = auth_header.split(' ')[1]
+        print("%"*40)
+        print(f" For the seesion the Token is {token}")
         
         try:
-            payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+            secret = os.environ.get('SUPABASE_SECRET_KEY')
+            print(f"KEY HAS VALUE: {secret}")
+            payload = jwt.decode(
+                token,
+                secret,
+                algorithms=['HS256'],
+                options={"verify_aud": False}
+            )
+
+            print(f"Payload: {payload}")
             user_id = payload['user_id']
-        except jwt.ExpiredSignatureError:
+
+            print(f"User_id is : {user_id}")
+        except jwt.ExpiredSignatureError as e:
+            print(e)
             return jsonify({'error': 'Token has expired'}), 401
-        except jwt.InvalidTokenError:
+        except jwt.InvalidTokenError as e:
+            print(e)
             return jsonify({'error': 'Invalid token'}), 401
         
         user = User.query.get(user_id)

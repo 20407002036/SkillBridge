@@ -8,6 +8,9 @@ import time
 from typing import Dict, List, Tuple, Optional
 import google.generativeai as genai
 
+# from gem import response
+
+
 class GeminiService:
     """
     Main Gemini service class for AI operations
@@ -29,7 +32,7 @@ class GeminiService:
         genai.configure(api_key=self.api_key)
         
         # Initialize model
-        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        self.model = genai.GenerativeModel('gemini-2.0-flash')
         
         # Retry configuration
         self.max_retries = 3
@@ -47,14 +50,14 @@ class GeminiService:
             Tuple of (user_profile, recommended_skills)
         """
         prompt = self._create_resume_analysis_prompt(resume_text, target_skill)
-        
+
         try:
             response = self._call_gemini_with_retry(prompt)
             return self._parse_resume_analysis_response(response, target_skill)
         except Exception as e:
             print(f"Gemini resume analysis failed: {e}")
-            # Fallback to mock data if Gemini fails
-            return self._fallback_resume_analysis(target_skill)
+            # Fallback to Ollama if Gemini fails.
+            return self._fallback_resume_analysis(prompt, target_skill)
     
     def generate_roadmap(self, selected_skills: List[str], preferences: Dict, user_profile: Dict) -> Dict:
         """
@@ -244,31 +247,44 @@ Guidelines:
             print(f"Failed to parse Gemini roadmap response: {e}")
             return self._fallback_roadmap_generation([], preferences, user_profile)
     
-    def _fallback_resume_analysis(self, target_skill: str) -> Tuple[Dict, List[Dict]]:
+    def _fallback_resume_analysis(self, prompt: str, target_skill: str) -> Tuple[Dict, List[Dict]]:
         """Fallback resume analysis if Gemini fails"""
-        user_profile = {
-            "name": "Professional",
-            "current_level": "Beginner",
-            "extracted_skills": [
-                {"skill": "Communication", "confidence": 0.8},
-                {"skill": "Problem Solving", "confidence": 0.7}
-            ],
-            "notes": f"Basic profile generated for {target_skill} aspirant"
-        }
-        
-        recommended_skills = [
-            {
-                "skill_id": "sk_01",
-                "name": "Core Fundamentals",
-                "description": f"Essential skills for {target_skill}",
-                "inferred_level": "Beginner",
-                "recommended_level": "Intermediate",
-                "estimated_duration_weeks": 8,
-                "score": 0.9
+
+        try:
+            import ollama
+
+            response = ollama.generate(
+                model='llama3.2:3b',
+                prompt=prompt
+            )
+
+            return self._parse_resume_analysis_response(response, target_skill)
+
+        except json.JSONDecodeError as e:
+            print(f"Error doing Analysis with Ollama: {e}")
+            user_profile = {
+                "name": "Professional",
+                "current_level": "Beginner",
+                "extracted_skills": [
+                    {"skill": "Communication", "confidence": 0.8},
+                    {"skill": "Problem Solving", "confidence": 0.7}
+                ],
+                "notes": f"Basic profile generated for {target_skill} aspirant"
             }
-        ]
-        
-        return user_profile, recommended_skills
+
+            recommended_skills = [
+                {
+                    "skill_id": "sk_01",
+                    "name": "Core Fundamentals",
+                    "description": f"Essential skills for {target_skill}",
+                    "inferred_level": "Beginner",
+                    "recommended_level": "Intermediate",
+                    "estimated_duration_weeks": 8,
+                    "score": 0.9
+                }
+            ]
+
+            return user_profile, recommended_skills
     
     def _fallback_roadmap_generation(self, selected_skills: List[str], preferences: Dict, user_profile: Dict) -> Dict:
         """Fallback roadmap generation if Gemini fails"""

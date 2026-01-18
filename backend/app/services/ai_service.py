@@ -7,6 +7,7 @@ import json
 import os
 from typing import Dict, List, Tuple
 
+from .Ollama.ollama_service import Ollama
 # Import LLM services
 from .gemini import GeminiService
 from dotenv import load_dotenv
@@ -20,6 +21,7 @@ class AIService:
     def __init__(self):
         """Initialize AI service with available LLM providers"""
         self.gemini_service = None
+        self.ollama_servie = None
 
         load_dotenv()
         
@@ -53,9 +55,12 @@ class AIService:
                 return service.gemini_service.analyze_resume(resume_text, target_skill)
             except Exception as e:
                 print(f"Gemini analysis failed: {e}, falling back to mock data")
-        
+
         # Fallback to mock implementation
-        return AIService._fallback_analyze_resume(resume_text, target_skill)
+        # return AIService._fallback_analyze_resume(resume_text, target_skill)
+        from .Ollama import ollama_service
+        ollama_servie = Ollama()
+        return ollama_servie.resume_analysis_fallback(resume_text, target_skill)
     
     @staticmethod
     def generate_roadmap(selected_skills: List[str], preferences: Dict, user_profile: Dict) -> Dict:

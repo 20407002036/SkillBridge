@@ -14,7 +14,7 @@ def test_upload_resume():
     """Test endpoint 1: Upload resume"""
     print("Testing endpoint 1: Upload resume...")
     
-    pdf_url = '/home/kyo/Downloads/Resume (1).pdf'
+    pdf_url = '/home/kyo/Downloads/Resume-V3 (3)_20250619084414.pdf'
     files = {'resume': open(pdf_url, 'rb')}
     data = {'target_skill': 'Data Science'}
     
@@ -32,7 +32,7 @@ def test_check_status(analysis_id):
     """Test endpoint 2: Check analysis status"""
     print(f"\nTesting endpoint 2: Check status for {analysis_id}...")
     
-    for i in range(20):  # Poll for up to 10 times
+    for i in range(240):  # Poll for up to 10 times
         response = requests.get(f"{BASE_URL}/status/{analysis_id}")
         print(f"Status check {i+1}: {response.json()}")
         

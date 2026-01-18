@@ -73,7 +73,10 @@ export default function AuthPage() {
         localStorage.setItem("user", JSON.stringify(userObj));
         localStorage.setItem("username", userObj.username);
         localStorage.setItem("email", userObj.email);
-        localStorage.setItem("userId", userObj.id);
+        localStorage.setItem("userId", userObj.id.toString());
+        
+        // Update axios default authorization header for immediate use
+        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
       }
       
       setMessage("Email verified successfully! Redirecting to dashboard...");
@@ -146,7 +149,12 @@ export default function AuthPage() {
         localStorage.setItem("user", JSON.stringify(userObj));
         localStorage.setItem("username", userObj.username);
         localStorage.setItem("email", userObj.email);
-        localStorage.setItem("userId", userObj.id);
+        localStorage.setItem("userId", userObj.id.toString());
+
+        // Update axios default authorization header for immediate use
+        if (res.data.token) {
+          axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+        }
 
         let successMessage = `Welcome back, ${userObj.username || "User"}!`;
         setMessage(successMessage);
